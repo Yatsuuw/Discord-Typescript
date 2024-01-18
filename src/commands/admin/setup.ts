@@ -19,7 +19,7 @@ export default command(meta, async ({ interaction }) => {
     }
 
     const existingServer = await new Promise<boolean>((resolve) => {
-        db.get('SELECT 1 FROM server_settings WHERE guildId = ?', [guildId], (err, row) => {
+        db.get('SELECT 1 FROM servers_settings WHERE guildId = ?', [guildId], (err, row) => {
             resolve(!!row);
         });
     });
@@ -39,7 +39,7 @@ export default command(meta, async ({ interaction }) => {
     }
 
     db.run(`
-        INSERT OR IGNORE INTO server_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl)
+        INSERT OR IGNORE INTO servers_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl)
         VALUES (?, NULL, NULL, NULL, 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif')
     `, [guildId], (err) => {
         if (err) {

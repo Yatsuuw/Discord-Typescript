@@ -38,7 +38,7 @@ export default command(meta, async ({ interaction }) => {
 
     if (key == "logchannelid")
         try {
-            db.run(`UPDATE server_settings SET logChannelId = ? WHERE guildId = ?`, [logChannelId, guildId])
+            db.run(`UPDATE servers_settings SET logChannelId = ? WHERE guildId = ?`, [logChannelId, guildId])
             interaction.reply({
                 ephemeral: true,
                 content: `L'ID du salon des logs a bien été modifié.\nNouvel ID : ${logChannelId}`
@@ -52,7 +52,7 @@ export default command(meta, async ({ interaction }) => {
         };
     if (key == "welcomechannelid")
         try {
-            db.run(`UPDATE server_settings SET welcomeChannelID = ? WHERE guildId = ?`, [welcomeChannelId, guildId])
+            db.run(`UPDATE servers_settings SET welcomeChannelID = ? WHERE guildId = ?`, [welcomeChannelId, guildId])
             interaction.reply({
                 ephemeral: true,
                 content: `L'ID du salon des messages de bienvenue a bien été modifié.\nNouvel ID : ${welcomeChannelId}`
@@ -66,7 +66,7 @@ export default command(meta, async ({ interaction }) => {
         };
     if (key == "leavechannelid")
         try {
-            db.run(`UPDATE server_settings SET leaveChannelID = ? WHERE guildId = ?`, [leaveChannelId, guildId])
+            db.run(`UPDATE servers_settings SET leaveChannelID = ? WHERE guildId = ?`, [leaveChannelId, guildId])
             interaction.reply({
                 ephemeral: true,
                 content: `L'ID du salon des messages de départ a bien été modifié.\nNouvel ID : ${leaveChannelId}`
@@ -80,7 +80,7 @@ export default command(meta, async ({ interaction }) => {
         };
     if (key == "welcomegifurl")
         try {
-            db.run(`UPDATE server_settings SET welcomeGifUrl = ? WHERE guildId = ?`, [welcomeGifUrl, guildId])
+            db.run(`UPDATE servers_settings SET welcomeGifUrl = ? WHERE guildId = ?`, [welcomeGifUrl, guildId])
             interaction.reply({
                 ephemeral: true,
                 content: `Le lien du gif du message de bienvenue a été modifié.\nNouveau lien : ${leaveChannelId}`
@@ -94,7 +94,7 @@ export default command(meta, async ({ interaction }) => {
         };
     if (key == "leavegifurl")
         try {
-            db.run(`UPDATE server_settings SET leaveGifUrl = ? WHERE guildId = ?`, [leaveGifUrl, guildId])
+            db.run(`UPDATE servers_settings SET leaveGifUrl = ? WHERE guildId = ?`, [leaveGifUrl, guildId])
             interaction.reply({
                 ephemeral: true,
                 content: `Le lien du gif du message de départ a été modifié.\nNouveau lien : ${leaveChannelId}`
