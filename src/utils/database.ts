@@ -17,7 +17,11 @@ db.run(`
     CREATE TABLE IF NOT EXISTS servers_users_warns (
         warnId INTEGER PRIMARY KEY AUTOINCREMENT,
         guildId INTEGER,
+        guildName TEXT,
         user TEXT,
+        username TEXT,
+        moderateur TEXT,
+        moderateurName TEXT,
         date DATE,
         raison TEXT,
         FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)

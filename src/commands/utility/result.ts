@@ -1,5 +1,10 @@
-import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, TextChannel } from 'discord.js'
 import { command } from '../../utils'
+import { db } from '../../utils/database'
+
+interface ServerSettings {
+    logChannelId?: string,
+}
 
 const meta = new SlashCommandBuilder ()
     .setName('result')
@@ -41,7 +46,7 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) => 
         option
             .setName('score')
-            .setDescription('Résultat final de la rencontre.')
+            .setDescription('Résultat final de la rencontre. Le score est dans le sens Team1 - Team2.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -63,40 +68,81 @@ const meta = new SlashCommandBuilder ()
     )
 
 export default command(meta, async ({ interaction }) => {
-    const team1 = interaction.options.getString('team-1')
-    const team2 = interaction.options.getString('team-1')
-    const composition1 = interaction.options.getString('team-1')
-    const composition2 = interaction.options.getString('team-1')
-    const score = interaction.options.getString('team-1')
-    const commentaire = interaction.options.getString('commentaire') || 'Pas de commentaire';
-    const key = interaction.options.getString('embed-color')
+    const guildId = interaction.guild?.id;
 
-    const mdt = new EmbedBuilder()
-        .setTitle("Résultat de la rencontre")
-        .addFields([
-            { name: 'Team 1 :', value: `${team1}`, inline: true },
-            { name: 'Team 2 :', value: `${team2}`, inline: true },
-            { name: 'Composition de l\'équipe 1 :', value: `${composition1}`, inline: true },
-            { name: 'Composition de l\'équipe 2 : ', value: `${composition2}`, inline: true },
-            { name: 'Score de la rencontre :', value: `${score}`, inline: true },
-            { name: 'Commentaire :', value: `${commentaire}`, inline: true },
-        ])
-        .setThumbnail(interaction.user.displayAvatarURL())
-        .setTimestamp()
-        .setFooter({ text: 'Par yatsuuw @ Discord', iconURL: interaction.user.displayAvatarURL() })
+    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        if (err) {
+            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            return;
+        }
 
-    try {
-        if (key == "Victoire")
-            mdt.setColor("Green")
-        if (key == "Défaite")
-            mdt.setColor("Red")
+        const team1 = interaction.options.getString('team-1')
+        const team2 = interaction.options.getString('team-2')
+        const composition1 = interaction.options.getString('team-1')
+        const composition2 = interaction.options.getString('team-2')
+        const score = interaction.options.getString('score')
+        const commentaire = interaction.options.getString('commentaire') || 'Pas de commentaire';
+        const key = interaction.options.getString('embed-color')
+        const logChannelId = row?.logChannelId;
+        //console.log(logChannelId);
 
-        interaction.deferReply();
-        setTimeout(() => interaction.deleteReply());
-        return await interaction.channel?.send({
-            embeds: [mdt]
-        })
-    } catch (error) {
-        return await interaction.reply({ content: `Une erreur est survenue lors de l\'envoi du résultat de la rencontre. Erreur :\n${error}` });
-    }
+        const mdt = new EmbedBuilder()
+            .setTitle("Résultat de la rencontre")
+            .addFields([
+                { name: 'Team 1 :', value: `${team1}`, inline: true },
+                { name: 'Team 2 :', value: `${team2}`, inline: true },
+                { name: 'Composition de l\'équipe 1 :', value: `${composition1}`, inline: true },
+                { name: 'Composition de l\'équipe 2 : ', value: `${composition2}`, inline: true },
+                { name: 'Score de la rencontre :', value: `${score}`, inline: true },
+                { name: 'Commentaire :', value: `${commentaire}`, inline: true },
+            ])
+            .setThumbnail(interaction.user.displayAvatarURL())
+            .setTimestamp()
+            .setFooter({ text: 'Par yatsuuw @ Discord', iconURL: interaction.user.displayAvatarURL() })
+
+        if (logChannelId) {
+            try {
+                const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
+                //console.log(logChannel)
+
+                if (logChannel) {
+                    try {
+                        if (key == "Victoire")
+                            mdt.setColor("Green")
+                        if (key == "Défaite")
+                            mdt.setColor("Red")
+            
+                        interaction.deferReply();
+                        setTimeout(() => interaction.deleteReply());
+                        await interaction.channel?.send({
+                            embeds: [mdt]
+                        })
+                    } catch (error) {
+                        await interaction.reply({ content: `Une erreur est survenue lors de l\'envoi du résultat de la rencontre. Erreur :\n${error}` });
+                    }
+
+                    const logResult = new EmbedBuilder()
+                        .setTitle('Log de la commande Result')
+                        .setColor('Navy')
+                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/result\` dans le salon <#${interaction.channel?.id}>`)
+                        .addFields([
+                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
+                            { name: 'Résultat', value: `${score}` },
+                            { name: 'Équipes', value: `${team1} - ${team2}` },
+                            { name: 'Commentaire', value: `${commentaire}` }
+                        ])
+                        .setTimestamp()
+                        .setFooter({ text: "Par yatsuuw @ Discord" })
+
+                    return logChannel.send({ embeds: [logResult] })
+                } else {
+                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                }
+            } catch (error) {
+                console.error(`Erreur de la récupération du salon des logs : `, error);
+            }
+        } else {
+            console.error(`L'ID du salon des logs est vide dans la base de données.`)
+        }
+    })
 });

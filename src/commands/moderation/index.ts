@@ -6,6 +6,10 @@ import mute from './mute'
 import unmute from './unmute'
 import channel from './channel'
 import userinfo from './userinfo'
+import warn from './warn'
+import warnslist from './warnslist'
+import unwarn from './unwarn'
+import thread from './thread'
 
 export default category('Moderation', [
     kick,
@@ -15,4 +19,8 @@ export default category('Moderation', [
     unmute,
     channel,
     userinfo,
+    warn,
+    warnslist,
+    unwarn,
+    thread,
 ])

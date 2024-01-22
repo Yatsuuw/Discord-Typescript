@@ -1,9 +1,10 @@
-import { EmbedBuilder, GuildMember, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder, GuildMember, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js'
 import { command } from '../../utils'
 
 const meta = new SlashCommandBuilder ()
     .setName('avatar')
     .setDescription('Envoie l\'avatar de l\'utilisateur visé.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     .setDMPermission(false)
     .addUserOption((option) => 
         option

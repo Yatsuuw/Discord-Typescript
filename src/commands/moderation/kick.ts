@@ -1,5 +1,10 @@
-import { EmbedBuilder, GuildMember, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder, GuildMember, PermissionFlagsBits, SlashCommandBuilder, TextChannel } from 'discord.js'
 import { command } from '../../utils'
+import { db } from '../../utils/database'
+
+interface ServerSettings {
+    logChannelId?: string,
+}
 
 const meta = new SlashCommandBuilder ()
     .setName('kick')
@@ -20,11 +25,19 @@ const meta = new SlashCommandBuilder ()
     )
 
 export default command(meta, async ({ interaction }) => {
+    const guildId = interaction.guild?.id;
+
+    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        if (err) {
+            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            return;
+        }
+
         const target = interaction.options.getMember('target') as GuildMember;
         const reason = interaction.options.getString('reason') || 'No reason.';
+        const logChannelId = row?.logChannelId;
 
         if (!target.kickable) return await interaction.reply({ content: 'Ce membre ne peut pas être expulsé.', ephemeral: true });
-        
         //if (!target.kickable) console.log(`${target.user.username} ne peut pas être expulsé`);
         //if (target.kickable) console.log(`${target.user.username} a été expulsé`)
 
@@ -52,13 +65,42 @@ export default command(meta, async ({ interaction }) => {
             .setFooter({ text: 'Par yatsuuw @ Discord' })
             .setTimestamp()
 
-        try {
-            await target.send({ embeds: [kickDm] });
-            const targetKick = "Y"
-            await target.kick(reason)
-            await interaction.reply({ embeds: [kickServer] })
-        } catch (error) {
-            await interaction.reply({ content: `Une erreur s'est produite lors de l'expulsion de l'utilisateur !\n${error}`, ephemeral: true });
+        if (logChannelId) {
+            try {
+                const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
+                //console.log(logChannel)
+
+                if (logChannel) {
+                    try {
+                        await target.send({ embeds: [kickDm] });
+                        const targetKick = "Y";
+                        await target.kick(reason)
+                        await interaction.reply({ embeds: [kickServer] })
+                    } catch (error) {
+                        await interaction.reply({ content: `Une erreur s'est produite lors de l'expulsion de l'utilisateur !\n${error}`, ephemeral: true });
+                    }
+
+                    const logKick = new EmbedBuilder()
+                        .setTitle('Log de la commande Kick')
+                        .setColor('Red')
+                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/kick\` sur l'utilisateur ${target.user.tag}`)
+                        .addFields([
+                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
+                            { name: 'Utilisateur visé', value: `<@${target.user.id}>` },
+                            { name: 'Raison', value: `${reason}` }
+                        ])
+                        .setTimestamp()
+                        .setFooter({ text: "Par yatsuuw @ Discord" })
+
+                    return logChannel.send({ embeds: [logKick] })
+                } else {
+                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                }
+            } catch (error) {
+                console.error(`Erreur de la récupération du salon des logs : `, error);
+            }
+        } else {
+            console.error(`L'ID du salon des logs est vide dans la base de données.`);
         }
-        
-})
+    });
+});

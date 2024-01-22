@@ -1,9 +1,10 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js'
 import { command } from '../../utils'
 
 const meta = new SlashCommandBuilder ()
     .setName('jsdoc')
     .setDescription('Envoie la documentation de la librairie Discord.JS')
+    .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     .setDMPermission(false)
 
 export default command(meta, async ({ interaction }) => {
