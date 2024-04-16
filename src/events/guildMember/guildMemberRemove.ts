@@ -9,10 +9,11 @@ interface ServerSettings {
 
 export default event('guildMemberRemove', (client, member) => {
     const guildId = member.guild.id;
+    const guildName = member.guild?.name;
 
-    db.get('SELECT leaveChannelID, leaveGifUrl from servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+    db.get('SELECT leaveChannelID, leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error("Erreur lors de la récupération des paramètres du serveur : ", err);
+            console.error(`Erreur lors de la récupération des paramètres leaveChannelId et leaveGifUrl pour le serveur ${guildName} (${guildId}) : `, err);
             return;
         }
 
@@ -29,20 +30,20 @@ export default event('guildMemberRemove', (client, member) => {
                     const memberLeave = new EmbedBuilder()
                         .setTitle(`${member.user.tag}`)
                         .setColor("Red")
-                        .setDescription(`<@${member.user.id}> (${member.user.id}) vient de quitter le serveur.`)
-                        .setImage(row?.leaveGifUrl || "")
+                        .setDescription(`<@${member.user.id}> (${member.user.id}) has just left the server.`)
+                        .setImage(leaveGifUrl || "")
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                     leaveChannel.send({ embeds: [memberLeave] })
                 } else {
-                    console.error(`Le salon de départ avec l'ID ${leaveChannelId} n'a pas été trouvé.`);
+                    console.error(`The starting channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error('Erreur lors de la récupération du salon de bienvenue : ', error);
+                console.error(`Error retrieving the welcome channel for the ${guildName} server (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon de départ est vide dans la base de données.`);
+            console.error(`The starting channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
 
         //if (leaveGifUrl) {

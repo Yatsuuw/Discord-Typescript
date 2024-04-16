@@ -4,33 +4,38 @@ import { db } from '../../utils/database'
 
 const meta = new SlashCommandBuilder ()
     .setName('setup')
-    .setDescription('Initialiser le bot dans la base de données.')
+    .setDescription('Initialise the bot in the database.')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(false)
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     if (!guildId) {
         return interaction.reply({
             ephemeral: true,
-            content: "Cette commande doit être utilisée dans un serveur."
+            content: "This command must be used on a server."
         });
     }
 
     const existingServer = await new Promise<boolean>((resolve) => {
         db.get('SELECT 1 FROM servers_settings WHERE guildId = ?', [guildId], (err, row) => {
             resolve(!!row);
+            if (err) {
+                console.error('Error when creating the server in the database.', err);
+                return;
+            }
         });
     });
 
     if (existingServer) {
         const existingServerEmbed = new EmbedBuilder()
-            .setTitle("Initialisation du serveur")
-            .setDescription("Le serveur est déjà initialisé dans la base de données.")
+            .setTitle("Server initialisation")
+            .setDescription("The server is already initialised in the database.")
             .setColor("Yellow")
             .setTimestamp()
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
         return interaction.reply({
             ephemeral: true,
@@ -39,23 +44,23 @@ export default command(meta, async ({ interaction }) => {
     }
 
     db.run(`
-        INSERT OR IGNORE INTO servers_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl)
-        VALUES (?, NULL, NULL, NULL, 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif')
+        INSERT OR IGNORE INTO servers_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl, levelChannelID)
+        VALUES (?, NULL, NULL, NULL, 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', NULL)
     `, [guildId], (err) => {
         if (err) {
-            console.error('Erreur de l\'initialisation du serveur dans la base de données. Erreur :\n', err)
+            console.error(`Server initialization error in the database for server ${guildName} (${guildId}). Error`, err)
             return interaction.reply({
                 ephemeral: true,
-                content: "Une erreur s'est produite lors de l'initialisation de la base de données."
+                content: "An error has occurred during database initialisation."
             });
         }
 
         const successEmbed = new EmbedBuilder()
-            .setTitle("Initialisation du serveur")
-            .setDescription("Le serveur a été initialisé avec succès dans la base de données.")
+            .setTitle("Server initialisation")
+            .setDescription("The server has been successfully initialised in the database.")
             .setColor("Green")
             .setTimestamp()
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
         return interaction.reply({
             ephemeral: true,

@@ -31,7 +31,7 @@ export default event('interactionCreate', async (
                 return await interaction.editReply(getCategoryPage(interaction.customId))
 
             default: 
-                throw new Error('Espace de noms invalide atteint...')
+                throw new Error('Invalid namespace reached...')
         }
 
     } catch (error) {
@@ -39,11 +39,11 @@ export default event('interactionCreate', async (
 
         if (interaction.deferred)
             return interaction.editReply(
-                EditReply.error('Quelque chose n\'a pas fonctionné :(')
+                EditReply.error('Something went wrong :(')
             )
 
         return interaction.reply(
-            Reply.error('Quelque chose n\'a pas fonctionné :(')
+            Reply.error('Something went wrong :(')
         )
     }
 })

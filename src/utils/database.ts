@@ -1,6 +1,6 @@
 import * as sqlite from 'sqlite3';
 
-export const db = new sqlite.Database('src/keys/client.db');
+export const db = new sqlite.Database('./client.db');
 
 db.run(`
     CREATE TABLE IF NOT EXISTS servers_settings (
@@ -8,8 +8,10 @@ db.run(`
         logChannelId TEXT,
         welcomeChannelID TEXT,
         leaveChannelID TEXT,
+        levelChannelID TEXT,
         welcomeGifUrl TEXT,
-        leaveGifUrl TEXT
+        leaveGifUrl TEXT,
+        levelChannelID TEXT
     );
 `)
 
@@ -24,6 +26,17 @@ db.run(`
         moderateurName TEXT,
         date DATE,
         raison TEXT,
+        FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
+    );
+`)
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS levels (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        guildId INTEGER,
+        userId TEXT,
+        level INTEGER DEFAULT 1,
+        experience INTEGER DEFAULT 0,
         FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
     );
 `)

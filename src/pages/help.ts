@@ -33,15 +33,16 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
 
     // Create embed
     const embed = new EmbedBuilder()
-        .setTitle('Menu d\'aide')
-        .setDescription('Recherche les informations liées à ta demande.')
+        .setTitle('Help menu')
+        .setDescription('Search for information relating to your request.')
         .setColor("Aqua")
+        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
     // Create select menu for categories
     const selectId = createId(N.select)
     const select = new StringSelectMenuBuilder()
         .setCustomId(selectId)
-        .setPlaceholder('Catégories des commandes')
+        .setPlaceholder('Commands categories')
         .setMaxValues(1)
         .setOptions(mappedCategories)
 
@@ -75,7 +76,7 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
 
     const category = categoryChunks.find(({ name }) => name === categoryName)
     if (!category)
-        throw new Error('interactionId invalide ; La page de la catégorie correspondante n\'a pas été trouvée !')
+        throw new Error('invalid interactionId ; The page for the corresponding category was not found !')
 
         // Get current offset
         let offset = parseInt(currentOffset)
@@ -86,20 +87,20 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
         else if (action === A.back) offset--
 
         const emoji = category.emoji ? `${category.emoji} ` : ''
-        const defaultDescription = `J'ai trouvé ${category.commands.flat().length} commandes dans la catégorie ${emoji}${category.name}`
+        const defaultDescription = `I found ${category.commands.flat().length} commands in the ${emoji}${category.name} category.`
 
         const embed = new EmbedBuilder()
-            .setTitle(`Commandes | ${emoji}${category.name}`)
+            .setTitle(`Commands | ${emoji}${category.name}`)
             .setDescription(category.description ?? defaultDescription)
             .setColor("Aqua")
             .setFields(category.commands[offset])
-            .setFooter({ text: `${offset + 1} / ${category.commands.length}` })
+            .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
         // Back button
         const backId = createId(N.action, category.name, A.back, offset)
         const backButton = new ButtonBuilder()
             .setCustomId(backId)
-            .setLabel('Retour')
+            .setLabel('Back')
             .setStyle(ButtonStyle.Danger)
             .setDisabled(offset <= 0)
 
@@ -107,14 +108,14 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
         const rootId = createId(N.root)
         const rootButton = new ButtonBuilder()
             .setCustomId(rootId)
-            .setLabel('Catégories')
+            .setLabel('Categories')
             .setStyle(ButtonStyle.Secondary)
 
         // Next button
         const nextId = createId(N.action, category.name, A.next, offset)
         const nextButton = new ButtonBuilder()
             .setCustomId(nextId)
-            .setLabel('Suivant')
+            .setLabel('Next')
             .setStyle(ButtonStyle.Success)
             .setDisabled(offset >= category.commands.length - 1)
 

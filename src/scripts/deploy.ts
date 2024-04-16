@@ -29,8 +29,8 @@ main()
     .then((user) => {
         const tag = `${user.username}#${user.discriminator}`
         const response = process.env.NODE_ENV === 'production'
-            ? `Les commandes ont été lancées avec succès en production en tant que ${tag}.`
-            : `Commandes enregistrées avec succès pour le développement en tant que ${tag} (${keys.testGuild}).`
+            ? `The commands were successfully registered in production as ${tag}.`
+            : `Commands successfully registered for development as ${tag} (${keys.testGuild}).`
 
         console.log(response)
     })

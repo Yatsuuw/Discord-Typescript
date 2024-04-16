@@ -8,19 +8,19 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('clear')
-    .setDescription('Supprimer un nombre de messages déterminé')
+    .setDescription('Delete a specific number of messages')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .setDMPermission(false)
     .addChannelOption((option) => 
         option
             .setName('channel')
-            .setDescription('Salon où les messages seront supprimés')
+            .setDescription('Channel where messages will be deleted')
             .setRequired(true)
     )
     .addIntegerOption((option) => 
         option
             .setName('number')
-            .setDescription('Nombre de messages à supprimer')
+            .setDescription('Number of messages to delete')
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(50)
@@ -28,16 +28,17 @@ const meta = new SlashCommandBuilder ()
     .addUserOption((option) =>
         option
             .setName('target')
-            .setDescription('Utilisateur qui verra ses messages être supprimés')
+            .setDescription('User whose messages will be deleted')
             .setRequired(false)
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -49,7 +50,7 @@ export default command(meta, async ({ interaction }) => {
         const logChannelId = row?.logChannelId;
 
         if (amount < 1 || amount > 100)
-            return interaction.reply("Vous ne pouvez pas renseigner un nombre inférieur à 1 ou supérieur à 100.");
+            return interaction.reply("You cannot enter a number less than 1 or greater than 100.");
 
         const messages: Collection<string, Message<true>> = await channel.messages.fetch();
 
@@ -66,7 +67,7 @@ export default command(meta, async ({ interaction }) => {
                         try {
                             deleted = (await channel.bulkDelete(Array.from(filterMessages.keys()).slice(0, amount), true)).size;
                         } catch (error) {
-                            return interaction.reply({ content: `Une erreur s'est produite lors de la suppression des messages !\n${error}`, ephemeral: true });
+                            return interaction.reply({ content: `An error has occurred while deleting the !\n${error} messages.`, ephemeral: true });
                         }
                 
                         if (deleted > 1) {
@@ -74,12 +75,12 @@ export default command(meta, async ({ interaction }) => {
                             const clearMessage = new EmbedBuilder()
                                 .setTitle("Clear")
                                 .setColor("Green")
-                                .setDescription(`Des messages ont été effacés dans le salon.`)
+                                .setDescription(`Messages have been deleted in the channel.`)
                                 .addFields([
-                                    { name: 'Nombre', value: `${deletedMessages}` }
+                                    { name: 'Number', value: `${deletedMessages}` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "Par yatsuuw @ Discord" })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                     
                             await interaction.reply({ embeds: [clearMessage], ephemeral: true });
                         }
@@ -88,69 +89,69 @@ export default command(meta, async ({ interaction }) => {
                             const clearMessage = new EmbedBuilder()
                                 .setTitle("Clear")
                                 .setColor("Green")
-                                .setDescription(`Des messages ont été effacés dans le salon.`)
+                                .setDescription(`Messages have been deleted in the channel.`)
                                 .addFields([
-                                    { name: 'Nombre', value: `${deletedMessages}` }
+                                    { name: 'Number', value: `${deletedMessages}` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "Par yatsuuw @ Discord" })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                     
                             await interaction.reply({ embeds: [clearMessage], ephemeral: true });
                         }
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur est survenue lors de la suppression du contenu. Erreur :\n${error}` });
+                        await interaction.reply({ content: `An error has occurred while deleting content. Error :\n${error}` });
                     }
 
                     if (amount > 1 && deleted > 1 || deleted === 0) {
                         const logClear = new EmbedBuilder()
-                            .setTitle("Log de la commande Clear")
+                            .setTitle("Clear command log")
                             .setColor('DarkOrange')
-                            .setDescription(`${interaction.user.tag} a utilisé la commande \`/clear\` dans le salon <#${interaction.channel?.id}>`)
+                            .setDescription(`${interaction.user.tag} used the command \`/clear\` in the channel <#${interaction.channel?.id}>.`)
                             .addFields([
-                                { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                { name: 'Nombre de messages', value: `${amount} messages à supprimer, ${deleted} ont été supprimés` }
+                                { name: 'User', value: `<@${interaction.user.id}>` },
+                                { name: 'Number of messages', value: `${amount} messages to be deleted, ${deleted} have been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "Par yatsuuw @ Discord" })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }
                     if (amount > 1 && deleted < 2 && deleted > 0) {
                         const logClear = new EmbedBuilder()
-                            .setTitle("Log de la commande Clear")
+                            .setTitle("Clear command log")
                             .setColor('DarkOrange')
-                            .setDescription(`${interaction.user.tag} a utilisé la commande \`/clear\` dans le salon <#${interaction.channel?.id}>`)
+                            .setDescription(`${interaction.user.tag} used the command \`/clear\` in the channel <#${interaction.channel?.id}>.`)
                             .addFields([
-                                { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                { name: 'Nombre de messages', value: `${amount} messages à supprimer, ${deleted} a été supprimé` }
+                                { name: 'User', value: `<@${interaction.user.id}>` },
+                                { name: 'Number of messages', value: `${amount} messages to be deleted, ${deleted} have been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "Par yatsuuw @ Discord" })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }
                     if (amount < 2 && deleted < 2) {
                         const logClear = new EmbedBuilder()
-                            .setTitle("Log de la commande Clear")
+                            .setTitle("Clear command log")
                             .setColor('DarkOrange')
-                            .setDescription(`${interaction.user.tag} a utilisé la commande \`/clear\` dans le salon <#${interaction.channel?.id}>`)
+                            .setDescription(`${interaction.user.tag} used the command \`/clear\` in the channel <#${interaction.channel?.id}>.`)
                             .addFields([
-                                { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                { name: 'Nombre de messages', value: `${amount} message à supprimer, ${deleted} a été supprimé` }
+                                { name: 'User', value: `<@${interaction.user.id}>` },
+                                { name: 'Number of messages', value: `${amount} message to be deleted, ${deleted} has been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "Par yatsuuw @ Discord" })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found.`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log channel for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`)
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`)
         }
     });
 });

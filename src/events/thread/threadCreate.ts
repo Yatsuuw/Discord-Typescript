@@ -1,6 +1,7 @@
 import { EmbedBuilder, TextChannel, ThreadChannel } from 'discord.js';
 import { event } from '../../utils';
 import { db } from '../../utils/database';
+import keys from '../../keys';
 
 interface ServerSettings {
     logChannelId?: string;
@@ -8,11 +9,12 @@ interface ServerSettings {
 
 export default event('threadCreate', async (client, thread: ThreadChannel<boolean>) => {
     const guildId = thread.guild?.id;
+    const guildName = thread.guild?.name;
     const ownerId = thread.ownerId;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération des paramètres du serveur :', err);
+            console.error(`Error retrieving "logChannelId" parameter for server ${guildName} (${guildId}) :`, err);
             return;
         }
 
@@ -26,29 +28,39 @@ export default event('threadCreate', async (client, thread: ThreadChannel<boolea
                     const threadCreateLog = new EmbedBuilder()
                         .setTitle('Thread')
                         .setColor('DarkOrange')
-                        .setDescription(`Le membre <@${ownerId}> (${ownerId}) a créé le thread \`${thread.name}\`.\nJe l'ai rejoint automatiquement.`)
+                        .setDescription(`The member <@${ownerId}> (${ownerId}) created the thread \`${thread.name}\`.\nI joined it automatically.`)
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" });
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
-                    // Rejoindre automatiquement le thread lors de sa création, puis le log
-                    if (thread.isTextBased()) {
-                        thread.join().then(() => {
-                            logChannel.send({ embeds: [threadCreateLog] });
-                            console.log(`Le bot a rejoint le thread : ${thread.name}.`);
-                        }).catch((error) => {
-                            console.error(`Erreur lors de la tentative de rejoindre le thread : ${thread.name}. Erreur : ${error}`);
-                        });
+                    //console.log(ownerId) // Pour vérifier si le code est exécuté deux fois
+
+                    // Si l'autheur du thread N'EST PAS le bot
+                    if (ownerId !== keys.botId) {
+                        // Rejoindre automatiquement le thread lors de sa création, puis le log
+                        if (thread.isTextBased()) {
+                            thread.join().then(async () => {
+                                await logChannel.send({ embeds: [threadCreateLog] });
+                            }).catch((error) => {
+                                console.error(`Error when trying to join the thread: ${thread.name} for the server ${guildName} (${guildId}). Error: ${error}`);
+                            });
+                        } else {
+                            logChannel.send({ content: `The ${thread.name} thread is not textual, so I can't join it.` });
+                        }
                     } else {
-                        console.error('Le thread n\'est pas textuel.');
+                        threadCreateLog.addFields([
+                            { name: 'Information', value: `The \`Emit Test\` thread was created and then deleted automatically because it came from the \`/emit threadCreate\` command.` }
+                        ])
+
+                        logChannel.send({ embeds: [threadCreateLog] })
                     }
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log channel for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log room ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
     });
 });

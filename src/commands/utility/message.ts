@@ -8,13 +8,13 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder()
     .setName('message')
-    .setDescription('Envoyer un message par le bot')
+    .setDescription('Send a message by bot')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .setDMPermission(false)
     .addStringOption((option) => 
         option
             .setName('message')
-            .setDescription('Message à envoyer')
+            .setDescription('Message to send')
             .setMinLength(1)
             .setMaxLength(2000)
             .setRequired(true)
@@ -22,10 +22,11 @@ const meta = new SlashCommandBuilder()
 
 export default command(meta, ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -38,7 +39,7 @@ export default command(meta, ({ interaction }) => {
 
         await interaction.reply({
             ephemeral: true,
-            content: 'Message envoyé ✅'
+            content: 'Message sent ✅'
         });
 
         if (logChannelId) {
@@ -48,25 +49,25 @@ export default command(meta, ({ interaction }) => {
 
                 if (logChannel) {
                     const logMessage = new EmbedBuilder()
-                        .setTitle('Log de la commande Message')
+                        .setTitle('Message command log')
                         .setColor("White")
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/message\` dans le salon <#${interaction.channel?.id}>`)
+                        .setDescription(`${interaction.user.tag} used the \`/message\` command in the <#${interaction.channel?.id}> channel.`)
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Contenu', value: `${message}` }
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Content', value: `${message}` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                     return logChannel.send({ embeds: [logMessage] });
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`)
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`)
         }
-    })
-})
+    });
+});

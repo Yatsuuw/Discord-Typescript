@@ -3,13 +3,13 @@ import { command } from '../../utils'
 
 const meta = new SlashCommandBuilder ()
     .setName('avatar')
-    .setDescription('Envoie l\'avatar de l\'utilisateur visé.')
+    .setDescription('Sends the target user\'s avatar.')
     .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     .setDMPermission(false)
     .addUserOption((option) => 
         option
             .setName('target')
-            .setDescription('Utilisateur à qui vous voulez récupérer l\'avatar.')
+            .setDescription('The user whose avatar you want to retrieve.')
             .setRequired(true)
     )
 
@@ -19,11 +19,11 @@ export default command(meta, async ({ interaction }) => {
     const avatar = new EmbedBuilder()
         .setAuthor({ name: `${target.user.tag}` })
         .setColor("White")
-        .setImage(target.user.displayAvatarURL({ size: 256 }))
-        .setFooter({ text: `Par yatsuuw @ Discord` })
+        .setImage(target.user.displayAvatarURL({ size: 4096 }))
+        .setFooter({ text: `By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
     return interaction.reply({
         ephemeral: true,
         embeds: [avatar]
-    })
-})
+    });
+});

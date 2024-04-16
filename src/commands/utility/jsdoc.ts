@@ -3,16 +3,16 @@ import { command } from '../../utils'
 
 const meta = new SlashCommandBuilder ()
     .setName('jsdoc')
-    .setDescription('Envoie la documentation de la librairie Discord.JS')
+    .setDescription('Sends the documentation for the Discord.JS library')
     .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
-    .setDMPermission(false)
+    .setDMPermission(true)
 
 export default command(meta, async ({ interaction }) => {
     const jsdoc = new EmbedBuilder()
-        .setTitle("Documentation de Discord.JS")
-        .addFields([{ name: 'Lien', value: '[Clique ici](https://discord.js.org/#/)' }])
+        .setTitle("Discord.JS documentation")
+        .addFields([{ name: 'Link', value: '[Click here](https://discord.js.org/#/)' }])
         .setTimestamp()
-        .setFooter({ text: "Par yatsuuw @ Discord" })
+        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
     return interaction.reply({
         ephemeral: true,

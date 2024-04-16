@@ -6,13 +6,34 @@ interface ServerSettings {
     logChannelId?: string;
 }
 
+function formatAutoArchiveDuration(minutes: number | null): string {
+    if (minutes === null) {
+        return 'never';
+    }
+
+    const hours = Math.floor(minutes / 60);
+
+    if (hours === 1) {
+        return '1 hour';
+    } else if (hours === 24) {
+        return '1 day';
+    } else if (hours === 24 * 3) {
+        return '3 days';
+    } else if (hours === 24 * 7) {
+        return '1 week';
+    } else {
+        return 'undefined';
+    }
+}
+
 export default event('threadUpdate', async (client, oldThread: ThreadChannel<boolean>, newThread: ThreadChannel<boolean>) => {
     const guildId = newThread.guild?.id;
+    const guildName = newThread.guild?.name;
     const ownerId = newThread.ownerId;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération des paramètres du serveur :', err);
+            console.error(`Error retrieving "logChannelId" parameter for server ${guildName} (${guildId}) :`, err);
             return;
         }
 
@@ -31,11 +52,11 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                             .addFields([
                                 {
                                     name: 'Action',
-                                    value: `Le thread \`${newThread.name}\` a été désarchivé par <@${ownerId}> (\`${ownerId}\`).\nJe l'ai donc rejoint à nouveau.`
+                                    value: `The thread \`${newThread.name}\` was unarchived by <@${ownerId}> (\`${ownerId}\`).\nSo I joined it again.`
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'Par yatsuuw @ Discord' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
                         // Rejoindre automatiquement le thread lors de sa désarchivation, puis le log
                         if (newThread.isTextBased()) {
@@ -43,19 +64,19 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                                 logChannel.send({ embeds: [threadUpdateLog] });
                                 //console.log(`Le bot a rejoint le thread : ${newThread.name}.`);
                             }).catch((error) => {
-                                console.error(`Erreur lors de la tentative de rejoindre le thread : ${newThread.name}. Erreur : ${error}`);
+                                console.error(`Error when trying to join the thread: ${newThread.name} for the server ${guildName} (${guildId}). Error: ${error}`);
                             });
                         } else {
-                            console.error('Le thread n\'est pas textuel.');
+                            logChannel.send(`The ${newThread.name} thread is not textual, so I can't join it.`);
                         }
                     } else {
-                        console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                        console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                     }
                 } catch (error) {
-                    console.error(`Erreur de la récupération du salon des logs : `, error);
+                    console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
                 }
             } else {
-                console.error(`L'ID du salon des logs est vide dans la base de données.`);
+                console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
             }
         }
 
@@ -74,21 +95,21 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                             .addFields([
                                 {
                                     name: 'Action',
-                                    value: `Le thread \`${oldThread.name}\` a été renommé en \`${newThread.name}\` par <@${ownerId}> (\`${ownerId}\`).`
+                                    value: `The thread \`${oldThread.name}\` has been renamed to \`${newThread.name}\` by <@${ownerId}> (\`${ownerId}\`).`
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'Par yatsuuw @ Discord' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {
-                        console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                        console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                     }
                 } catch (error) {
-                    console.error(`Erreur de la récupération du salon des logs : `, error);
+                    console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
                 }
             } else {
-                console.error(`L'ID du salon des logs est vide dans la base de données.`);
+                console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
             }
         }
 
@@ -106,26 +127,29 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                             .addFields([
                                 {
                                     name: 'Action',
-                                    value: `Le délai entre les messages dans le thread \`${newThread.name}\` est passé de \`${oldThread.rateLimitPerUser} secondes\` à \`${newThread.rateLimitPerUser} secondes\`.`
+                                    value: `The delay between messages in the \`${newThread.name}\` thread has been changed from \`${oldThread.rateLimitPerUser} seconds\` to \`${newThread.rateLimitPerUser} seconds\`.`
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'Par yatsuuw @ Discord' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {
-                        console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                        console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                     }
                 } catch (error) {
-                    console.error(`Erreur de la récupération du salon des logs : `, error);
+                    console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
                 }
             } else {
-                console.error(`L'ID du salon des logs est vide dans la base de données.`);
+                console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
             }
         }
 
-        if (oldThread.archiveTimestamp !== newThread.archiveTimestamp) {
+        if (oldThread.autoArchiveDuration !== newThread.autoArchiveDuration) {
             const logChannelId = row?.logChannelId;
+
+            const oldDuration = formatAutoArchiveDuration(oldThread.autoArchiveDuration);
+            const newDuration = formatAutoArchiveDuration(newThread.autoArchiveDuration);
 
             if (logChannelId) {
                 try {
@@ -139,21 +163,21 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                             .addFields([
                                 {
                                     name: 'Action',
-                                    value: `Le délai entre l'archivage et la suppression automatique du thread \`${newThread.name}\` est passé de \`indéfini\` à \`indéfini\`.`
+                                    value: `The period of inactivity required to automatically hide the thread \`${newThread.name}\` has been changed from \`${oldDuration}\` to \`${newDuration}\`.`
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'Par yatsuuw @ Discord' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {
-                        console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                        console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                     }
                 } catch (error) {
-                    console.error(`Erreur de la récupération du salon des logs : `, error);
+                    console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
                 }
             } else {
-                console.error(`L'ID du salon des logs est vide dans la base de données.`);
+                console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
             }
         }
     })

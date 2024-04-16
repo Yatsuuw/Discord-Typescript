@@ -6,6 +6,8 @@ import poll from './poll'
 import jsdoc from './jsdoc'
 import result from './result'
 import avatar from './avatar'
+import version from './version'
+import level from './level'
 
 export default category('Utility', [
     message,
@@ -15,4 +17,6 @@ export default category('Utility', [
     jsdoc,
     result,
     avatar,
+    version,
+    level,
 ])

@@ -22,10 +22,11 @@ const meta = new SlashCommandBuilder ()
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -44,29 +45,29 @@ export default command(meta, async ({ interaction }) => {
                             content: message ?? 'Pong! 🏓'
                         })
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur est survenue lors du calcul de la latence du bot. Erreur :\n${error}` });
+                        await interaction.reply({ content: `An error occurred when calculating the bot's latency. Error :\n${error}` });
                     }
 
                     const logPing = new EmbedBuilder()
-                        .setTitle("Log de la commande Ping")
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/ping\` dans le salon <#${interaction.channel?.id}>`)
+                        .setTitle("Ping command log")
+                        .setDescription(`${interaction.user.tag} used the command \`/ping\` in the lounge <#${interaction.channel?.id}>.`)
                         .setColor('White')
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Message', value: `${message || "Pas de message"}` }
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Message', value: `${message || "No message"}` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                     return logChannel.send({ embeds: [logPing] })
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`)
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`)
         }
     });
 });

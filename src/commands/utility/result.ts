@@ -8,13 +8,13 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('result')
-    .setDescription('Envoie le résultat d\'une rencontre sportive ou e-sport.')
+    .setDescription('Sends the result of a sports or e-sport match.')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .setDMPermission(false)
     .addStringOption((option) => 
         option
             .setName('team-1')
-            .setDescription('Nom de la première équipe.')
+            .setDescription('Name of the first team.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -22,7 +22,7 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) => 
         option
             .setName('composition-1')
-            .setDescription('Composition de la première équipe.')
+            .setDescription('Composition of the first team.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -30,7 +30,7 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) => 
         option
             .setName('team-2')
-            .setDescription('Nom de la deuxième équipe.')
+            .setDescription('Name of the second team.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -38,7 +38,7 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) => 
         option
             .setName('composition-2')
-            .setDescription('Composition de la deuxième équipe.')
+            .setDescription('Composition of the second team.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -46,7 +46,7 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) => 
         option
             .setName('score')
-            .setDescription('Résultat final de la rencontre. Le score est dans le sens Team1 - Team2.')
+            .setDescription('Final result of the match. The score is Team1 - Team2.')
             .setMinLength(1)
             .setMaxLength(50)
             .setRequired(true)
@@ -54,14 +54,14 @@ const meta = new SlashCommandBuilder ()
     .addStringOption((option) =>
         option
             .setName('embed-color')
-            .setDescription('Si la victoire est à vous, prenez victoire ! Si la défaite est à vous, prenez défaite :(.')
+            .setDescription('If victory is yours, take victory! If defeat is yours, take defeat :(.')
             .setRequired(true)
-            .addChoices({ name: 'Victoire', value: 'Victoire' }, { name: 'Défaite', value: 'Défaite' })
+            .addChoices({ name: 'Victory', value: 'Victoire' }, { name: 'Defeat', value: 'Défaite' })
     )
     .addStringOption((option) => 
         option
-            .setName('commentaire')
-            .setDescription('Ajouter un commentaire à la rencontre (100 caractères maximum)')
+            .setName('comment')
+            .setDescription('Add a comment to the meeting (100 characters maximum)')
             .setMinLength(1)
             .setMaxLength(100)
             .setRequired(false)
@@ -69,10 +69,11 @@ const meta = new SlashCommandBuilder ()
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -81,7 +82,7 @@ export default command(meta, async ({ interaction }) => {
         const composition1 = interaction.options.getString('team-1')
         const composition2 = interaction.options.getString('team-2')
         const score = interaction.options.getString('score')
-        const commentaire = interaction.options.getString('commentaire') || 'Pas de commentaire';
+        const commentaire = interaction.options.getString('comment') || 'No comment';
         const key = interaction.options.getString('embed-color')
         const logChannelId = row?.logChannelId;
         //console.log(logChannelId);
@@ -91,14 +92,14 @@ export default command(meta, async ({ interaction }) => {
             .addFields([
                 { name: 'Team 1 :', value: `${team1}`, inline: true },
                 { name: 'Team 2 :', value: `${team2}`, inline: true },
-                { name: 'Composition de l\'équipe 1 :', value: `${composition1}`, inline: true },
-                { name: 'Composition de l\'équipe 2 : ', value: `${composition2}`, inline: true },
-                { name: 'Score de la rencontre :', value: `${score}`, inline: true },
-                { name: 'Commentaire :', value: `${commentaire}`, inline: true },
+                { name: 'Composition of the first team :', value: `${composition1}`, inline: true },
+                { name: 'Composition of the second team : ', value: `${composition2}`, inline: true },
+                { name: 'Score of the match :', value: `${score}`, inline: true },
+                { name: 'Comment :', value: `${commentaire}`, inline: true },
             ])
             .setThumbnail(interaction.user.displayAvatarURL())
             .setTimestamp()
-            .setFooter({ text: 'Par yatsuuw @ Discord', iconURL: interaction.user.displayAvatarURL() })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
         if (logChannelId) {
             try {
@@ -118,31 +119,31 @@ export default command(meta, async ({ interaction }) => {
                             embeds: [mdt]
                         })
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur est survenue lors de l\'envoi du résultat de la rencontre. Erreur :\n${error}` });
+                        await interaction.reply({ content: `An error occurred when sending the result of the match. Error :\n${error}` });
                     }
 
                     const logResult = new EmbedBuilder()
-                        .setTitle('Log de la commande Result')
+                        .setTitle('Result command log')
                         .setColor('Navy')
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/result\` dans le salon <#${interaction.channel?.id}>`)
+                        .setDescription(`${interaction.user.tag} used the \`/result\` command in the <#${interaction.channel?.id}> channel.`)
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Résultat', value: `${score}` },
-                            { name: 'Équipes', value: `${team1} - ${team2}` },
-                            { name: 'Commentaire', value: `${commentaire}` }
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Result', value: `${score}` },
+                            { name: 'Teams', value: `${team1} - ${team2}` },
+                            { name: 'Comment', value: `${commentaire}` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord" })
 
                     return logChannel.send({ embeds: [logResult] })
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`)
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`)
         }
-    })
+    });
 });

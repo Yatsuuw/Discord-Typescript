@@ -16,30 +16,31 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder()
     .setName('unwarn')
-    .setDescription('Supprimer un warn d\'un utilisateur')
+    .setDescription('Delete a user\'s warn')
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .setDMPermission(false)
     .addUserOption((option) =>
         option
             .setName('target')
-            .setDescription('Utilisateur à qui supprimer un avertissement')
+            .setDescription('User to delete a warning from')
             .setRequired(true)
     )
     .addIntegerOption((option) =>
         option
             .setName('warnid')
-            .setDescription('ID du warn à supprimer')
+            .setDescription('ID of the warn to be deleted')
             .setRequired(true)
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
     const target = interaction.options.getMember('target') as GuildMember;
     const warnId = interaction.options.getInteger('warnid');
 
     db.get('SELECT * from servers_users_warns WHERE guildId = ? AND user = ? AND warnId = ?', [guildId, target.user.id, warnId], async (err, row: UserSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération des paramètres dans la base de données.\nErreur :\n', err);
+            console.error(`Error retrieving warnId, date, moderateur, moderateurName and raison parameters from the database for the server ${guildName} (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -51,7 +52,7 @@ export default command(meta, async ({ interaction }) => {
 
         db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
             if (err) {
-                console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+                console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
                 return;
             }
 
@@ -65,67 +66,67 @@ export default command(meta, async ({ interaction }) => {
                     if (logChannel) {
                         try {
                             if (!row) {
-                                return interaction.reply({ content: "Aucun avertissement trouvé avec cet ID pour cet utilisateur." });
+                                return interaction.reply({ content: "No warnings found with this ID for this user." });
                             }
                     
                             db.run('DELETE FROM servers_users_warns WHERE guildId = ? AND user = ? AND warnId = ?', [guildId, target.user.id, warnId], (deletedErr) => {
                                 if (deletedErr) {
-                                    console.error(`Erreur lors de la suppression de l'avertissement dans la base de données.\nErreur :\n`, deletedErr);
-                                    return interaction.reply({ content: `Une erreur s'est produite lors de la suppression de l'avertissement dans la base de données. Erreur :\n${deletedErr}` });
+                                    console.error(`Error deleting warning from database for server ${guildName} (${guildId}).\nError :\n`, deletedErr);
+                                    return interaction.reply({ content: `An error occurred when deleting the warning from the database. Error :\n${deletedErr}` });
                                 }
                     
                                 const unwarn = new EmbedBuilder()
-                                    .setTitle('Avertissement retiré')
+                                    .setTitle('Warning removed')
                                     .setColor('Green')
-                                    .setDescription(`${target.user.tag} vient de perdre un avertissement.`)
-                                    .setImage(target.user.displayAvatarURL())
+                                    .setDescription(`${target.user.tag} has just had a warning removed.`)
+                                    .setThumbnail(target.displayAvatarURL())
                                     .addFields([
-                                        { name: 'Avertissement concerné', value: `**ID :** #${warnId}\n**Autheur de l'avertissement :** ${moderateurName} (${moderateur})\n**Date de l'avertissement :** ${date}\n**Raison :** ${raison}` },
-                                        { name: 'Utilisateur concerné', value: `<@${target.user.id}>` }
+                                        { name: 'Warning concerned', value: `**ID :** #${warnId}\n**Author of the warning :** ${moderateurName} (${moderateur})\n**Date of warning :** ${date}\n**Reason :** ${raison}` },
+                                        { name: 'User concerned', value: `<@${target.user.id}>` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                     
                                 const unwarnDm = new EmbedBuilder()
-                                    .setTitle('Avertissement retiré')
+                                    .setTitle('Warning concerned')
                                     .setColor('Green')
-                                    .setDescription(`Vous venez de perdre un avertissement.`)
+                                    .setDescription(`You've just lost a warning.`)
                                     .addFields([
-                                        { name: 'Avertissement concerné', value: `**ID :** #${warnId}\n**Autheur de l'avertissement :** ${moderateurName} (${moderateur})\n**Date de l'avertissement :** ${date}\n**Raison :** ${raison}` },
-                                        { name: 'Serveur concerné', value: `${interaction.guild?.name}` },
-                                        { name: 'Modérateur', value: `<@${interaction.user.id}>` }
+                                        { name: 'Warning concerned', value: `**ID :** #${warnId}\n**Author of the warning :** ${moderateurName} (${moderateur})\n**Date of warning :** ${date}\n**Reason :** ${raison}` },
+                                        { name: 'Server concerned', value: `${interaction.guild?.name}` },
+                                        { name: 'Moderator', value: `<@${interaction.user.id}>` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                     
                                 interaction.reply({ embeds: [unwarn] });
                                 target.send({ embeds: [unwarnDm] })
                             })
                         } catch (error) {
-                            await interaction.reply({ content: `Une erreur s'est produite lors de l'envoi du message regroupant les avertissements de ${target.user.tag}. Erreur :\n${error}` });
+                            await interaction.reply({ content: `An error occurred when sending the message containing the warnings for ${target.user.tag}. Error :\n${error}` });
                         }
 
                         const logUnwarn = new EmbedBuilder()
-                            .setTitle('Log de la commande Unwarn')
+                            .setTitle('Unwarn command log')
                             .setColor('DarkGold')
-                            .setDescription(`${interaction.user.tag} a utilisé la commande \`/warnslist\` sur l'utilisateur ${target.user.tag}.`)
+                            .setDescription(`${interaction.user.tag} used the \`/warnslist\` command on the user ${target.user.tag}.`)
                             .addFields([
-                                { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                { name: 'Utilisateur visé', value: `<@${target.user.id}>` },
-                                { name: 'Avertissement concerné', value: `**ID :** #${warnId}\n**Autheur de l'avertissement :** ${moderateurName} (${moderateur})\n**Date de l'avertissement :** ${date}\n**Raison :** ${raison}` },
+                                { name: 'User', value: `<@${interaction.user.id}>` },
+                                { name: 'Target user', value: `<@${target.user.id}>` },
+                                { name: 'Warning concerned', value: `**ID :** #${warnId}\n**Author of the warning :** ${moderateurName} (${moderateur})\n**Date of warning :** ${date}\n**Reason :** ${raison}` },
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "Par yatsuuw @ Discord" })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                         return await logChannel.send({ embeds: [logUnwarn] })
                     } else {
-                        console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                        console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                     }
                 } catch (error) {
-                    console.error(`Erreur de la récupération du salon des logs : `, error);
+                    console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
                 }
             } else {
-                console.error(`L'ID du salon des logs est vide dans la base de données.`);
+                console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
             }
         });
     });

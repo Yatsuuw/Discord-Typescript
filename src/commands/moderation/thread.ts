@@ -8,29 +8,30 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('thread')
-    .setDescription('Permet la gestion des fils de discussion')
+    .setDescription('Allows you to manage discussion threads')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .setDMPermission(false)
     .addStringOption(option =>
         option
             .setName("event")
-            .setDescription("Action à donner à faire au bot")
+            .setDescription("Action to be given to the bot")
             .setRequired(true)
             .addChoices(
-                { name: 'Rejoindre', value: 'join' },
-                { name: 'Quitter', value: 'leave' },
-                { name: 'Archiver', value: 'archive' },
-                { name: 'Désarchiver', value: 'unarchive' },
-                { name: 'Supprimer', value: 'delete' }
+                { name: 'Join', value: 'join' },
+                { name: 'Quit', value: 'leave' },
+                { name: 'Archive', value: 'archive' },
+                { name: 'Unarchive', value: 'unarchive' },
+                { name: 'Delete', value: 'delete' }
             )
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -45,7 +46,7 @@ export default command(meta, async ({ interaction }) => {
                         const key = interaction.options.getString('event');
                         const thread = interaction.channel;
 
-                        if (!thread?.isThread()) return interaction.reply({ content: 'Impossible de saisir cette commande. Vous ne vous trouvez pas dans un thread.', ephemeral: true });
+                        if (!thread?.isThread()) return interaction.reply({ content: 'Impossible to enter this command. You are not in a thread.', ephemeral: true });
                         await thread.join()
 
                         if (key === "join") {
@@ -54,26 +55,26 @@ export default command(meta, async ({ interaction }) => {
                                     .setTitle('Thread')
                                     .setColor('Green')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de rejoindre le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just joined the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
                                     .setColor('White')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de rejoindre le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just joined the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 if (thread.joinable) await thread.join();
                                 await interaction.reply({ embeds: [joinThread] });
                                 // Log l'événement Thread Join
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
-                                return await interaction.reply({ content: `Je n'ai pas réussi à rejoindre le thread. Erreur :\n${error}`, ephemeral: true });
+                                return await interaction.reply({ content: `I was unable to join the thread. Error :\n${error}`, ephemeral: true });
                             };
                         };
 
@@ -83,26 +84,26 @@ export default command(meta, async ({ interaction }) => {
                                     .setTitle('Thread')
                                     .setColor('Red')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de quitter le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just left the thread ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
                                     .setColor('DarkRed')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de quitter le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just left the thread ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 await interaction.reply({ embeds: [leaveThread] });
                                 await thread.leave();
                                 // Log l'événement Thread Leave
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
-                                interaction.reply({ content: `Je n'ai pas réussi à quitter le thread. Erreur :\n${error}`, ephemeral: true });
+                                interaction.reply({ content: `JI was unable to leave the thread. Error :\n${error}`, ephemeral: true });
                             };
                         };
 
@@ -112,26 +113,26 @@ export default command(meta, async ({ interaction }) => {
                                     .setTitle('Thread')
                                     .setColor('Grey')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens d'archiver le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just archived the thread $${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
                                     .setColor('DarkAqua')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens d'archiver le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just archived the thread $${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 await interaction.reply({ embeds: [archiveThread] });
                                 await thread.setArchived(true);
                                 // Log l'événement Thread Archive
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
-                                interaction.reply({ content: `Je n'ai pas réussi à archiver le thread. Erreur :\n${error}`, ephemeral: true });
+                                interaction.reply({ content: `I was unable to archive the thread. Error :\n${error}`, ephemeral: true });
                             };
                         };
 
@@ -141,26 +142,26 @@ export default command(meta, async ({ interaction }) => {
                                     .setTitle("Thread")
                                     .setColor('DarkGrey')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de désarchiver le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just unarchived the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle("Thread")
                                     .setColor('Aqua')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de désarchiver le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just unarchived the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 await thread.setArchived(false);
                                 await interaction.reply({ embeds: [unarchiveThread] });
                                 // Log l'événement Thread Unarchive
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
-                                interaction.reply({ content: `Je n'ai pas réussi à désarchiver le thread. Erreur :\n${error}`, ephemeral: true });
+                                interaction.reply({ content: `I couldn't unarchive the thread. Error :\n${error}`, ephemeral: true });
                             };
                         };
 
@@ -170,39 +171,39 @@ export default command(meta, async ({ interaction }) => {
                                     .setTitle("Thread")
                                     .setColor('DarkGrey')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de supprimer le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just deleted the thread \`${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle("Thread")
                                     .setColor('LightGrey')
                                     .addFields([
-                                        { name: 'Action', value: `Je viens de supprimer le thread \`${thread.name}\` ! ✅` }
+                                        { name: 'Action', value: `I've just deleted the thread \`${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 await interaction.reply({ embeds: [deleteThread] });
                                 await thread.delete();
                                 // Log l'événement Thread Delete
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
-                                interaction.reply({ content: `Je n'ai pas réussi à supprimer le thread. Erreur :\n${error}`, ephemeral: true });
+                                interaction.reply({ content: `I was unable to delete the thread. Error :\n${error}`, ephemeral: true });
                             };
                         };
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur s'est produite lors de l'exécution de la commande.\n${error}`, ephemeral: true });
+                        await interaction.reply({ content: `An error has occurred while executing the command.\n${error}`, ephemeral: true });
                     }
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
     });
 });

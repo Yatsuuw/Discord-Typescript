@@ -8,88 +8,89 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('channel')
-    .setDescription('Administrer les paramètres d\'un salon')
+    .setDescription('Administering channel settings')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
     .setDMPermission(false)
     .addChannelOption((option) => 
         option
-            .setName('salon')
-            .setDescription('Salon où l\'on veut modifier le statut.')
+            .setName('channel')
+            .setDescription('Channel where you want to change the status.')
             .setRequired(true)
     )
     .addStringOption((option) =>
         option
-            .setName("statut")
-            .setDescription("Choisissez la modification de statut que vous souhaitez.")
+            .setName("status")
+            .setDescription("Choose the status change you want.")
             .setRequired(true)
             .addChoices({ name: 'Lock', value: 'Lock' }, { name: 'Unlock', value: 'Unlock' }, { name: 'Slowmode', value: 'Slowmode' })
     )
     .addNumberOption((option) =>
         option
             .setName("cooldown")
-            .setDescription("Temps du mode lent en secondes.")
+            .setDescription("Slow mode time in seconds.")
             .setRequired(false)
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
         //const channel = (interaction.options.getChannel('message') || interaction.channel) as TextChannel;
-        const channel_modify = interaction.options.getChannel("salon") as TextChannel;
-        const key = interaction.options.getString('statut');
+        const channel_modify = interaction.options.getChannel("channel") as TextChannel;
+        const key = interaction.options.getString('status');
         //const value = interaction.options.getString('value');
         const cooldown = interaction.options.getNumber('cooldown') || 0;
         const logChannelId = row?.logChannelId;
 
         const lockMessage = new EmbedBuilder()
-            .setTitle("Statut du salon")
-            .setDescription("Le statut du salon vient d'être modifié")
+            .setTitle("Channel status")
+            .setDescription("The status of the channel has just been changed")
             .setColor("Red")
             .addFields([
-                { name: `État`, value: `Vérouillé` },
-                { name: `Salon`, value: `${channel_modify}` },
+                { name: `Condition`, value: `Locked` },
+                { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: 'Par yatsuuw @ Discord' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
 
         const unlockMessage = new EmbedBuilder()
-            .setTitle("Statut du salon")
-            .setDescription("Le statut du salon vient d'être modifié")
+            .setTitle("Channel status")
+            .setDescription("The status of the channel has just been changed")
             .setColor("Green")
             .addFields([
-                { name: `État`, value: `Dévérouillé` },
-                { name: `Salon`, value: `${channel_modify}` },
+                { name: `Condition`, value: `Unlocked` },
+                { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: 'Par yatsuuw @ Discord' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         const cooldownMessageOn = new EmbedBuilder()
-            .setTitle("Mode lent")
-            .setDescription("Le mode lent vient d'être activé ! ✅")
+            .setTitle("Slow mode")
+            .setDescription("Slow mode has just been activated! ✅")
             .setColor("Red")
             .addFields([
-                { name: 'Temps du mode lent', value: `${cooldown} secondes` },
-                { name: `Salon`, value: `${channel_modify}` },
+                { name: 'Slow mode time', value: `${cooldown} secondes` },
+                { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         const cooldownMessageOff = new EmbedBuilder()
-            .setTitle("Mode lent")
-            .setDescription("Le mode lent vient d'être désactivé ! ❌")
+            .setTitle("Slow mode")
+            .setDescription("Slow mode has just been deactivated! ❌")
             .setColor("Green")
             .addFields([
-                { name: 'Temps du mode lent', value: `${cooldown} secondes` },
-                { name: `Salon`, value: `${channel_modify}` },
+                { name: 'Slow mode time', value: `${cooldown} secondes` },
+                { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         if (logChannelId) {
@@ -106,18 +107,18 @@ export default command(meta, async ({ interaction }) => {
                                 embeds: [lockMessage]
                             })
                             const logLock = new EmbedBuilder()
-                                .setTitle('Log de la commande Channel-Lock')
+                                .setTitle('Channel-Lock command log')
                                 .setColor('White')
-                                .setDescription(`${interaction.user.tag} a utilisé la commande \`/channel <salon> <lock>\` pour le salon ${channel_modify}`)
+                                .setDescription(`${interaction.user.tag} used the command \`/channel <channel> <lock>\` for the channel ${channel_modify}`)
                                 .addFields([
-                                    { name: 'Utilisateur', value: `<@${interaction.user.id}>` }
+                                    { name: 'User', value: `<@${interaction.user.id}>` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "Par yatsuuw @ Discord" })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                             return logChannel.send({ embeds: [logLock] })
                         } catch (error) {
-                            await interaction.reply({ content: `Une erreur est survenue lors du changement d'état du salon. Erreur :\n${error}`, ephemeral: true });
+                            await interaction.reply({ content: `An error has occurred when changing the state of the channel. Error :\n${error}`, ephemeral: true });
                         }
                     }
                     if (key == 'Unlock') {
@@ -128,18 +129,18 @@ export default command(meta, async ({ interaction }) => {
                                 embeds: [unlockMessage]
                             })
                             const logUnlock = new EmbedBuilder()
-                                .setTitle('Log de la commande Channel-Unlock')
+                                .setTitle('Log of the Channel-Unlock command')
                                 .setColor('White')
-                                .setDescription(`${interaction.user.tag} a utilisé la commande \`/channel <salon> <unlock>\` pour le salon ${channel_modify}`)
+                                .setDescription(`${interaction.user.tag} used the command \`/channel <channel> <unlock>\` for the channel ${channel_modify}`)
                                 .addFields([
-                                    { name: 'Utilisateur', value: `<@${interaction.user.id}>` }
+                                    { name: 'User', value: `<@${interaction.user.id}>` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "Par yatsuuw @ Discord" })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                             return logChannel.send({ embeds: [logUnlock] })
                         } catch (error) {
-                            await interaction.reply({ content: `Une erreur est survelue lors du changement d'état du salon. Erreur :\n${error}`, ephemeral: true });
+                            await interaction.reply({ content: `An error is generated when the channel changes state. Error :\n${error}`, ephemeral: true });
                         }
                     }
                     if (key == 'Slowmode') {
@@ -151,15 +152,15 @@ export default command(meta, async ({ interaction }) => {
                                     embeds: [cooldownMessageOff]
                                 })
                                 const logSlowmode = new EmbedBuilder()
-                                    .setTitle('Log de la commande Channel-Slowmode')
+                                    .setTitle('Channel-Slowmode command log')
                                     .setColor('White')
-                                    .setDescription(`${interaction.user.tag} a utilisé la commande \`/channel <salon> <slowmode>\` pour le salon ${channel_modify}`)
+                                    .setDescription(`${interaction.user.tag} used the command \`/channel <channel> <slowmode>\` for the channel ${channel_modify}`)
                                     .addFields([
-                                        { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                        { name: 'Mode lent', value: `${cooldown} secondes` }
+                                        { name: 'User', value: `<@${interaction.user.id}>` },
+                                        { name: 'Slow mode', value: `${cooldown} seconds` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 return logChannel.send({ embeds: [logSlowmode] })
                             } if (cooldown > 0) {
@@ -169,30 +170,30 @@ export default command(meta, async ({ interaction }) => {
                                     embeds: [cooldownMessageOn]
                                 })
                                 const logSlowmode = new EmbedBuilder()
-                                    .setTitle('Log de la commande Channel-Slowmode')
+                                    .setTitle('Channel-Slowmode command log')
                                     .setColor('White')
-                                    .setDescription(`${interaction.user.tag} a utilisé la commande \`/channel <salon> <slowmode>\` pour le salon ${channel_modify}`)
+                                    .setDescription(`${interaction.user.tag} used the command \`/channel <channel> <slowmode>\` for the channel ${channel_modify}`)
                                     .addFields([
-                                        { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                                        { name: 'Mode lent', value: `${cooldown} secondes` }
+                                        { name: 'User', value: `<@${interaction.user.id}>` },
+                                        { name: 'Slow mode', value: `${cooldown} seconds` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                                 return logChannel.send({ embeds: [logSlowmode] })
                             }
                         } catch (error) {
-                            await interaction.reply({ content: `Une erreur est survenue lors de l'application du cooldown. Erreur :\n${error}`, ephemeral: true });
+                            await interaction.reply({ content: `An error occurred when applying the cooldown. Error :\n${error}`, ephemeral: true });
                         }
                     }
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
     });
 });

@@ -2,7 +2,7 @@ import commands from '../../commands'
 import { Command } from '../../types'
 import { EditReply, event, Reply } from '../../utils'
 
-const allCommands = commands.map(({ commands }) => commands).flat()
+const allCommands = commands.map(({ commands }) => commands).flat();
 const allCommandsMap = new Map<string, Command>(
     allCommands.map((c) => [c.meta.name, c])
 )
@@ -20,7 +20,7 @@ export default event('interactionCreate', async (
         const commandName = interaction.commandName
         const command = allCommandsMap.get(commandName)
 
-        if (!command) throw new Error('Commande non trouvée...')
+        if (!command) throw new Error('Command not found...')
 
         await command.exec({
             client,
@@ -34,11 +34,11 @@ export default event('interactionCreate', async (
 
         if (interaction.deferred)
             return interaction.editReply(
-                EditReply.error('Quelque chose n\'a pas fonctionné :(')
+                EditReply.error('Something went wrong :(')
             )
 
         return interaction.reply(
-            Reply.error('Quelque chose n\'a pas fonctionné :(')
+            Reply.error('Something went wrong :(')
         )
     }
 })

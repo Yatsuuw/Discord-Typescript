@@ -9,19 +9,19 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder()
     .setName('warn')
-    .setDescription('Donner un avertissement à un utilisateur')
+    .setDescription('Giving a warning to a user')
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .setDMPermission(false)
     .addUserOption((option) =>
         option
             .setName('user')
-            .setDescription('Utilisateur à avertir')
+            .setDescription('User to warn')
             .setRequired(true)
     )
     .addStringOption((option) =>
         option
             .setName('reason')
-            .setDescription('Raison de l\'avertissement')
+            .setDescription('Reason for warning')
             .setRequired(true)
     )
 
@@ -37,7 +37,7 @@ export default command(meta, async ({ interaction }) => {
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
@@ -53,72 +53,72 @@ export default command(meta, async ({ interaction }) => {
                         if (target.user.id != interaction.user.id) {
                             db.run(`INSERT INTO servers_users_warns (guildId, guildName, user, username, moderateur, moderateurName, date, raison) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [guildId, guildName, target.id, target.user.tag, moderatorId, moderatorName, currentDate, reason], (err) => {
                                 if (err) {
-                                    console.error('Erreur lors de l\'enregistrement de l\'avertissement dans la base de données :', err);
-                                    return interaction.reply('Une erreur s\'est produite lors de l\'enregistrement de l\'avertissement.');
+                                    console.error(`Error saving warning in database for server ${guildName} (${guildId}) :`, err);
+                                    return interaction.reply('An error occurred while recording the warning.');
                                 }
                         
                                 const warn = new EmbedBuilder()
-                                    .setTitle("Avertissement")
+                                    .setTitle("Warning")
                                     .setColor('Red')
-                                    .setDescription(`${target.user.tag} vient de recevoir un avertissement.`)
-                                    .setImage(target.user.displayAvatarURL())
+                                    .setDescription(`${target.user.tag} has just received a warning.`)
+                                    .setThumbnail(target.displayAvatarURL())
                                     .addFields([
-                                        { name: 'Membre du staff', value: `<@${interaction.user.id}>` },
-                                        { name: 'Utilisateur averti', value: `<@${target.user.id}>` },
-                                        { name: 'Raison', value: `${reason}` }
+                                        { name: 'Staff', value: `<@${interaction.user.id}>` },
+                                        { name: 'Warned user', value: `<@${target.user.id}>` },
+                                        { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                         
                                 const warnDm = new EmbedBuilder()
-                                    .setTitle("Avertissement")
+                                    .setTitle("Warning")
                                     .setColor('Red')
-                                    .setDescription(`Vous venez de recevoir un avertissement.`)
+                                    .setDescription(`You have just received a warning.`)
                                     .addFields([
-                                        { name: 'Serveur concerné', value: `${guildName}` },
-                                        { name: 'Membre du staff', value: `<@${interaction.user.id}>` },
-                                        { name: 'Raison', value: `${reason}` }
+                                        { name: 'Server concerned', value: `${guildName}` },
+                                        { name: 'Staff', value: `<@${interaction.user.id}>` },
+                                        { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord" })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
                         
                                 interaction.reply({ embeds: [warn] });
                                 target.send({ embeds: [warnDm] })
                             });
                         } else {
-                            await interaction.reply({ content: 'Vous ne pouvez pas vous avertir vous-même.', ephemeral: true });
+                            await interaction.reply({ content: 'You can\'t warn yourself.', ephemeral: true });
                         }
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur s'est produite lors de l'enregistrement de l'avertissement de ${target.user.tag}. Erreur :\n${error}` });
+                        await interaction.reply({ content: `An error occurred when registering the ${target.user.tag} warning. Error :\n${error}` });
                     }
 
                     const logWarn = new EmbedBuilder()
-                        .setTitle('Log de la commande Warn')
+                        .setTitle('Warn command log')
                         .setColor('DarkRed')
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/warn\` sur l'utilisateur ${target.user.tag}.`)
+                        .setDescription(`${interaction.user.tag} used the \`/warn\` command on the user ${target.user.tag}.`)
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Utilisateur visé', value: `<@${target.user.id}>` },
-                            { name: 'Raison', value: `${reason}` },
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Target user', value: `<@${target.user.id}>` },
+                            { name: 'Reason', value: `${reason}` },
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                     if (target.user.id != interaction.user.id) {
-                        logWarn.addFields([{ name: 'Raison', value: `${reason}` }])
+                        logWarn.addFields([{ name: 'Reason', value: `${reason}` }])
                     } else {
-                        logWarn.addFields([{ name: 'Échec', value: `<@${interaction.user.id}> a tenté de s'appliquer un avertissement.` }])
+                        logWarn.addFields([{ name: 'Failure', value: `<@${interaction.user.id}> attempted to apply a warning to itself.` }])
                     }
 
                     return await logChannel.send({ embeds: [logWarn] })
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
     });
 });

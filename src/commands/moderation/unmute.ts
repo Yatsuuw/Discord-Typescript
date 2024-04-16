@@ -8,51 +8,52 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('unmute')
-    .setDescription('Rendre la parole à un utilisateur')
+    .setDescription('Giving users a voice')
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .setDMPermission(false)
     .addUserOption((option) =>
         option
             .setName('target')
-            .setDescription('Utilisateur qui retrouvera la parole')
+            .setDescription('User who can speak again')
             .setRequired(true)
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
         const target = (interaction.options.getMember('target') || '') as GuildMember;
         const logChannelId = row?.logChannelId;
 
-        if (!target.isCommunicationDisabled()) return await interaction.reply({ content: 'Cet utilisateur a déjà retrouvé le droit à la parole !', ephemeral: true });
+        if (!target.isCommunicationDisabled()) return await interaction.reply({ content: 'This user has already regained the right to speak!', ephemeral: true });
 
         const unmuteServer = new EmbedBuilder()
-            .setTitle('Parole')
-            .setDescription('Un nouvel utilisateur vient de retrouver son droit à la parole !')
+            .setTitle('Speech')
+            .setDescription('A new user has just regained his right to speak!')
             .setColor('Green')
             .addFields([
                 { name: 'Utilisateur', value: `${target}` },
                 { name: 'Staff', value: `${interaction.user.username}` },
             ])
-            .setImage(target.displayAvatarURL())
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setThumbnail(target.displayAvatarURL())
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         const unmuteDm = new EmbedBuilder()
-            .setTitle('Parole')
-            .setDescription(`Vous venez de retrouver votre droit à la parole sur le serveur \`${target.guild.name}\`.`)
+            .setTitle('Speech')
+            .setDescription(`You've just regained your right to speak on the \`${target.guild.name}\` server.`)
             .setColor('Green')
             .addFields([
                 { name: 'Staff', value: `${interaction.user.username}` },
             ])
-            .setImage(target.displayAvatarURL())
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setThumbnail(target.displayAvatarURL())
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         if (logChannelId) {
@@ -66,29 +67,29 @@ export default command(meta, async ({ interaction }) => {
                         await target.timeout(null);
                         await interaction.reply({ embeds: [unmuteServer] });
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur est survenue lors de la remise du droit à la parole. Erreur :\n${error}.`, ephemeral: true });
+                        await interaction.reply({ content: `An error has occurred while giving the right to speak. Error :\n${error}.`, ephemeral: true });
                     }
 
                     const logUnmute = new EmbedBuilder()
-                        .setTitle('Log de la commande Unmute')
+                        .setTitle('Unmute command log')
                         .setColor('Fuchsia')
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/unmute\` sur l'utilisateur ${target.user.tag}`)
+                        .setDescription(`${interaction.user.tag} used the command \`/unmute\` on the user ${target.user.tag}`)
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Utilisateur visé', value: `<@${target.user.id}>` }
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Target user', value: `<@${target.user.id}>` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
 
                     return logChannel.send({ embeds: [logUnmute] })
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log channel ID is empty in the ${guildName} database (${guildId}).`);
         }
     });
 });

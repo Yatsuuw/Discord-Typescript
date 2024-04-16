@@ -5,14 +5,18 @@ import { db } from '../../utils/database';
 interface ServerSettings {
     welcomeChannelID?: string;
     welcomeGifUrl?: string;
+    userId?: string,
+    level?: number,
+    experience?: number,
 }
 
 export default event('guildMemberAdd', async (client, member) => {
     const guildId = member.guild.id;
+    const guildName = member.guild?.name;
 
     db.get('SELECT welcomeChannelID, welcomeGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération des paramètres du serveur :', err);
+            console.error(`Error retrieving welcomeChannelId and welcomeGifUrl parameters for server ${guildName} (${guildId}) :`, err);
             return;
         }
 
@@ -29,20 +33,20 @@ export default event('guildMemberAdd', async (client, member) => {
                     const memberJoin = new EmbedBuilder()
                         .setTitle(`${member.user.tag}`)
                         .setColor("Green")
-                        .setDescription(`<@${member.user.id}> vient de rejoindre le serveur.`)
-                        .setImage(row?.welcomeGifUrl || "")
+                        .setDescription(`<@${member.user.id}> has just joined the server.`)
+                        .setImage(welcomeGifUrl || "")
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" });
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
 
                     welcomeChannel.send({ embeds: [memberJoin] });
                 } else {
-                    console.error(`Le salon de bienvenue avec l'ID ${welcomeChannelId} n'a pas été trouvé.`);
+                    console.error(`The welcome channel with ID ${welcomeChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error('Erreur lors de la récupération du salon de bienvenue :', error);
+                console.error(`Error retrieving the welcome channel for the ${guildName} server (${guildId}). Error :`, error);
             }
         } else {
-            console.error(`L'ID du salon de bienvenue est vide dans la base de données.`);
+            console.error(`The welcome channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
 
         //if (welcomeGifUrl) {

@@ -9,70 +9,71 @@ interface ServerSettings {
 
 const meta = new SlashCommandBuilder ()
     .setName('mute')
-    .setDescription('Retirer la parole à un utilisateur')
+    .setDescription('Remove a user\'s voice')
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .setDMPermission(false)
     .addUserOption((option) =>
         option
             .setName('target')
-            .setDescription('Utilisateur qui va perdre le droit à la parole')
+            .setDescription('User who will lose the right to speak')
             .setRequired(true)
     )
     .addStringOption((option) =>
         option
             .setName('reason')
-            .setDescription('Raison de la perte du droit à la parole')
+            .setDescription('Reasons for losing the right to speak')
             .setRequired(false)
     )
     .addStringOption((option) =>
         option
             .setName('duration')
-            .setDescription('Durée de la perte du droit à la parole (renseignez les unités temporelles !)')
+            .setDescription('Duration of loss of right to speak (enter time units!)')
             .setRequired(false)
     )
 
 export default command(meta, async ({ interaction }) => {
     const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
 
     db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error('Erreur lors de la récupération du paramètre "logChannelId" dans la base de données.\nErreur :\n', err);
+            console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
         }
 
         const target = (interaction.options.getMember('target') || '') as GuildMember;
-        const duration = interaction.options.getString('duration') || '1';
+        const duration = interaction.options.getString('duration') || '1s';
         const convertedTime = ms(duration);
         const reason = interaction.options.getString('reason') || 'No reason';
         const logChannelId = row?.logChannelId;
-        console.log(logChannelId);
+        //console.log(logChannelId);
 
-        if (!target.moderatable) return await interaction.reply({ content: 'Cet utilisateur ne peut pas être rendu muet !', ephemeral: true });
-        if (!convertedTime) return await interaction.reply({ content: 'Spécifie une durée valide !', ephemeral: true });
+        if (!target.moderatable) return await interaction.reply({ content: 'This user cannot be muted!', ephemeral: true });
+        if (!convertedTime) return await interaction.reply({ content: 'Specifies a valid duration!', ephemeral: true });
 
         const muteServer = new EmbedBuilder()
-            .setTitle("Parole")
-            .setDescription("Malheureusement, un nouvel utilisateur vient de perdre son droit de parole !")
+            .setTitle("Speech")
+            .setDescription("Unfortunately, a new user has just lost his right to speak!")
             .setColor("Red")
             .addFields([
-                { name: `Utilisateur`, value: `${target}` },
-                { name: `Durée`, value: `${duration} `},
-                { name: `Raison`, value: `${reason}` }
+                { name: `User`, value: `${target}` },
+                { name: `Duration`, value: `${duration} `},
+                { name: `Reason`, value: `${reason}` }
             ])
-            .setImage(target.displayAvatarURL())
-            .setFooter({ text: "Par yatsuuw @ Discord" })
+            .setThumbnail(target.displayAvatarURL())
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         const muteDm = new EmbedBuilder()
-            .setTitle("Parole")
-            .setDescription(`Vous venez de perdre la parole sur le serveur \`${target.guild.name}\`.`)
+            .setTitle("Speech")
+            .setDescription(`You have just lost your voice on the \`${target.guild.name}\` server.`)
             .setColor("Red")
             .addFields([
-                { name: 'Raison :', value: `${reason}` },
-                { name: 'Durée', value: `${duration}` }
+                { name: 'Reason :', value: `${reason}` },
+                { name: 'Duration', value: `${duration}` }
             ])
-            .setImage(target.displayAvatarURL())
-            .setFooter({ text: 'Par yatsuuw @ Discord' })
+            .setThumbnail(target.displayAvatarURL())
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
             .setTimestamp()
 
         if (logChannelId) {
@@ -86,31 +87,31 @@ export default command(meta, async ({ interaction }) => {
                         await target.send({ embeds: [muteDm] });
                         await interaction.reply({ embeds: [muteServer] });
                     } catch (error) {
-                        await interaction.reply({ content: `Une erreur est survenue lors du mute. Erreur :\n${error}`, ephemeral: true });
+                        await interaction.reply({ content: `An error has occurred during mute. Error :\n${error}`, ephemeral: true });
                     }
         
                     const logMute = new EmbedBuilder()
-                        .setTitle('Log de la commande Mute')
+                        .setTitle('Mute command log')
                         .setColor('Purple')
-                        .setDescription(`${interaction.user.tag} a utilisé la commande \`/mute\` sur l'utilisateur ${target.user.tag}`)
+                        .setDescription(`${interaction.user.tag} used the command \`/mute\` on the user ${target.user.tag}`)
                         .addFields([
-                            { name: 'Utilisateur', value: `<@${interaction.user.id}>` },
-                            { name: 'Utilisateur visé', value: `<@${target.user.id}>` },
-                            { name: 'Raison', value: `${reason}` },
-                            { name: 'Durée', value: `${duration}` }
+                            { name: 'User', value: `<@${interaction.user.id}>` },
+                            { name: 'Target user', value: `<@${target.user.id}>` },
+                            { name: 'Reason', value: `${reason}` },
+                            { name: 'Duration', value: `${duration}` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "Par yatsuuw @ Discord" })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
         
                     return logChannel.send({ embeds: [logMute] })
                 } else {
-                    console.error(`Le salon des logs avec l'ID ${logChannelId} n'a pas été trouvé.`);
+                    console.error(`The log channel with ID ${logChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
-                console.error(`Erreur de la récupération du salon des logs : `, error);
+                console.error(`Error retrieving the log room for server ${guildName} (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`L'ID du salon des logs est vide dans la base de données.`);
+            console.error(`The log channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
     });
 });

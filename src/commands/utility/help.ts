@@ -4,9 +4,9 @@ import { getCategoryRoot } from '../../pages/help'
 
 const meta = new SlashCommandBuilder ()
     .setName('help')
-    .setDescription('Obtenir une liste des commandes du bot')
+    .setDescription('Get a list of bot commands')
     .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
-    .setDMPermission(false)
+    .setDMPermission(true)
 
 export default command(meta, ({ interaction }) => {
     return interaction.reply(getCategoryRoot(true))

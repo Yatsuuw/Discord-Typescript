@@ -10,6 +10,7 @@ import warn from './warn'
 import warnslist from './warnslist'
 import unwarn from './unwarn'
 import thread from './thread'
+import managelevels from './managelevels'
 
 export default category('Moderation', [
     kick,
@@ -23,4 +24,5 @@ export default category('Moderation', [
     warnslist,
     unwarn,
     thread,
+    managelevels,
 ])
