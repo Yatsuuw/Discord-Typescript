@@ -9,6 +9,7 @@ interface ServerSettings {
     welcomeGifUrl?: string,
     leaveGifUrl?: string,
     levelChannelID?: string,
+    levelSystem?: string,
 }
 
 const meta = new SlashCommandBuilder ()
@@ -20,14 +21,14 @@ const meta = new SlashCommandBuilder ()
         option
             .setName("data")
             .setDescription("Value to be modified")
-            .setRequired(true)
+            .setRequired(false)
             .addChoices(
                 { name: 'Log Channel ID', value: 'logchannelid' },
                 { name: 'Welcome Channel ID', value: 'welcomechannelid' },
                 { name: 'Leave Channel ID', value: 'leavechannelid' },
                 { name: 'Welcome Gif URL', value: 'welcomegifurl' },
                 { name: 'Leave Gif URL', value: 'leavegifurl' },
-                { name: 'Level Channel ID', value: 'levelchannelid' }
+                { name: 'Level Channel ID', value: 'levelchannelid' },
             )
     )
     .addStringOption(option =>
@@ -36,8 +37,14 @@ const meta = new SlashCommandBuilder ()
             .setDescription("Element that replaces the previous one.")
             .setRequired(false)
     )
+    .addBooleanOption(option =>
+        option
+            .setName('levels-system')
+            .setDescription('Activate or unactivate ?')
+            .setRequired(false)
+    )
 
-export default command(meta, async ({ interaction }) => {
+export default command(meta, async ({ interaction, log }) => {
     const key = interaction.options.getString('data');
     const guildId = interaction.guild?.id;
     const logChannelId = interaction.options.getString("element");
@@ -46,6 +53,7 @@ export default command(meta, async ({ interaction }) => {
     const welcomeGifUrl = interaction.options.getString("element");
     const leaveGifUrl = interaction.options.getString("element");
     const levelChannelId = interaction.options.getString("element");
+    const levelSystemBool = interaction.options.getBoolean("levels-system");
     const guildName = interaction.guild?.name;
 
     if (key == "logchannelid")
@@ -184,7 +192,7 @@ export default command(meta, async ({ interaction }) => {
             }
         })
     if (key == "levelchannelid")
-        db.get('SELECT levelChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT levelChannelID, levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
             if (err) {
                 console.error('Error retrieving the "levelChannelID" parameter from the database.', err);
             }
@@ -204,9 +212,61 @@ export default command(meta, async ({ interaction }) => {
                 };
             } else {
                 const levelChannel = row?.levelChannelID;
+                if (row?.levelSystem == "1")
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The level message channel ID is : ${levelChannel}\nThe status of the level system is : \`Enabled\``
+                    });
+                else if (row?.levelSystem == "0")
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The level message channel ID is : ${levelChannel}\nThe status of the level system is : \`Disabled\``
+                    });
+                else
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The level message channel ID is : ${levelChannel}\nThe status of the level system is : \`Not Defined\``
+                    })
+            }
+        })
+    if (levelSystemBool !== null)
+        db.get('SELECT levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+            if (err) {
+                console.error('Error retrieving the "levelSystem" parameter from the database.', err);
+            }
+            if (levelSystemBool == true) {
+                try {
+                    db.run(`UPDATE servers_settings SET levelSystem = ? WHERE guildId = ?`, [levelSystemBool, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `Leveling system was activated.`
+                    });
+                } catch (error) {
+                    console.error(`An error occured when modifying the value for the leveling system on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occured when modifying the value for the leveling system.`
+                    });
+                };
+            } else if (levelSystemBool == false) {
+                try {
+                    db.run(`UPDATE servers_settings SET levelSystem = ? WHERE guildId = ?`, [levelSystemBool, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `Leveling system was desactivated.`
+                    });
+                } catch (error) {
+                    console.error(`An error occured when modifying the value for the leveling system on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occured when modifying the value for the leveling system.`
+                    });
+                };
+            } else {
+                const levelSystem = row?.levelSystem;
                 interaction.reply({
                     ephemeral: true,
-                    content: `The starting gif link is: ${levelChannel}`
+                    content: `Leveling system : ${levelSystem}`
                 });
             }
         })
