@@ -71,7 +71,7 @@ export default command(meta, async ({ interaction }) => {
                             });
                         
                             warnsEmbed.setTimestamp()
-                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
                         
                             interaction.reply({ embeds: [warnsEmbed] });
                         });
@@ -88,7 +88,7 @@ export default command(meta, async ({ interaction }) => {
                             { name: 'Target user', value: `<@${target.user.id}>` },
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                     return await logChannel.send({ embeds: [logWarnslist] })
                 } else {

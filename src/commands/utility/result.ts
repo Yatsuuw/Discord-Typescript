@@ -99,7 +99,7 @@ export default command(meta, async ({ interaction }) => {
             ])
             .setThumbnail(interaction.user.displayAvatarURL())
             .setTimestamp()
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         if (logChannelId) {
             try {

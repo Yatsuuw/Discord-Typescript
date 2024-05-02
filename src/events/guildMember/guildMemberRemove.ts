@@ -30,20 +30,20 @@ export default event('guildMemberRemove', (client, member) => {
                     const memberLeave = new EmbedBuilder()
                         .setTitle(`${member.user.tag}`)
                         .setColor("Red")
-                        .setDescription(`<@${member.user.id}> (${member.user.id}) has just left the server.`)
+                        .setDescription(`<@${member.user.id}> (${member.user.id}) has just left the server.\nWe are now \`${member.guild.memberCount}\` on the server.`)
                         .setImage(leaveGifUrl || "")
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                     leaveChannel.send({ embeds: [memberLeave] })
                 } else {
-                    console.error(`The starting channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
+                    console.error(`The departure channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
                 console.error(`Error retrieving the welcome channel for the ${guildName} server (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`The starting channel ID is empty in the database for the ${guildName} server (${guildId}).`);
+            console.error(`The departure channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
 
         //if (leaveGifUrl) {

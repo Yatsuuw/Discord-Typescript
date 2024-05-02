@@ -42,7 +42,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Permission', value: 'Your account ID does not match that of the bot owner.' }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                         
                                 interaction.reply({ embeds: [dontOwner], ephemeral: true })
                             } else {
@@ -55,7 +55,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const reloadLog = new EmbedBuilder()
                                     .setTitle('Restart')
@@ -65,7 +65,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Status', value: `Restart has been validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "Par yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                         
                                 await interaction.reply({ embeds: [reloadSuccess], ephemeral: true })
                                 await logChannel.send({ embeds: [reloadLog] })
@@ -96,7 +96,7 @@ export default command(meta, async ({ interaction }) => {
                         { name: 'Permission', value: 'Your account ID does not match that of the bot owner.' }
                     ])
                     .setTimestamp()
-                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                     await interaction.reply({ embeds: [dontOwner], ephemeral: true });
             } else {
@@ -108,9 +108,9 @@ export default command(meta, async ({ interaction }) => {
                         { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
                     ])
                     .setTimestamp()
-                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
-                await interaction.reply({ embeds: [reloadSuccess], ephemeral: true })
+                await interaction.reply({ embeds: [reloadSuccess], ephemeral: false })
 
                 return process.exit();
             }

@@ -35,8 +35,11 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
     const embed = new EmbedBuilder()
         .setTitle('Help menu')
         .setDescription('Search for information relating to your request.')
+        .addFields([
+            { name: 'About', value: '→ /version for the current version and the about bot.' }
+        ])
         .setColor("Aqua")
-        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
     // Create select menu for categories
     const selectId = createId(N.select)
@@ -94,7 +97,7 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
             .setDescription(category.description ?? defaultDescription)
             .setColor("Aqua")
             .setFields(category.commands[offset])
-            .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         // Back button
         const backId = createId(N.action, category.name, A.back, offset)

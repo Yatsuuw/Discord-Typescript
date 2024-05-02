@@ -43,7 +43,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: 'Created an account on', value: `<t:${Math.floor(target.user.createdTimestamp / 1000)}:f>` },
                 { name: 'Joined the server on', value: target.joinedTimestamp ? `<t:${Math.floor(target.joinedTimestamp / 1000)}:f>` : 'N/A' },
             ])
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         if (logChannelId) {
             try {

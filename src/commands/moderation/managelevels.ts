@@ -47,7 +47,7 @@ export default command(meta, async ({ interaction }) => {
         .setColor('DarkRed')
         .setDescription(`${interaction.user.tag} used the command \`/manage-level\` on the user ${target.user.tag} with the key ${key}.`)
         .setTimestamp()
-        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
     if (interaction.guild) {
 

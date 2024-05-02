@@ -33,10 +33,10 @@ export default event('guildMemberAdd', async (client, member) => {
                     const memberJoin = new EmbedBuilder()
                         .setTitle(`${member.user.tag}`)
                         .setColor("Green")
-                        .setDescription(`<@${member.user.id}> has just joined the server.`)
+                        .setDescription(`<@${member.user.id}> has just joined the server.\nWe are now \`${member.guild.memberCount}\` on the server.`)
                         .setImage(welcomeGifUrl || "")
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                     welcomeChannel.send({ embeds: [memberJoin] });
                 } else {

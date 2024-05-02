@@ -58,7 +58,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just joined the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
@@ -67,7 +67,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just joined the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 if (thread.joinable) await thread.join();
                                 await interaction.reply({ embeds: [joinThread] });
@@ -87,7 +87,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just left the thread ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
@@ -96,7 +96,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just left the thread ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 await interaction.reply({ embeds: [leaveThread] });
                                 await thread.leave();
@@ -116,7 +116,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just archived the thread $${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle('Thread')
@@ -125,7 +125,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just archived the thread $${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 await interaction.reply({ embeds: [archiveThread] });
                                 await thread.setArchived(true);
@@ -145,7 +145,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just unarchived the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle("Thread")
@@ -154,7 +154,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just unarchived the \`${thread.name}\` thread! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 await thread.setArchived(false);
                                 await interaction.reply({ embeds: [unarchiveThread] });
@@ -174,7 +174,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just deleted the thread \`${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 const threadLog = new EmbedBuilder()
                                     .setTitle("Thread")
@@ -183,7 +183,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Action', value: `I've just deleted the thread \`${thread.name}\` ! ✅` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 await interaction.reply({ embeds: [deleteThread] });
                                 await thread.delete();

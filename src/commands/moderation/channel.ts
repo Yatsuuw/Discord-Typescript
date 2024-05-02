@@ -56,7 +56,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: `Condition`, value: `Locked` },
                 { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
 
@@ -68,7 +68,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: `Condition`, value: `Unlocked` },
                 { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
         const cooldownMessageOn = new EmbedBuilder()
@@ -79,7 +79,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: 'Slow mode time', value: `${cooldown} secondes` },
                 { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
         const cooldownMessageOff = new EmbedBuilder()
@@ -90,7 +90,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: 'Slow mode time', value: `${cooldown} secondes` },
                 { name: `Channel`, value: `${channel_modify}` },
             ])
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
         if (logChannelId) {
@@ -114,7 +114,7 @@ export default command(meta, async ({ interaction }) => {
                                     { name: 'User', value: `<@${interaction.user.id}>` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                             return logChannel.send({ embeds: [logLock] })
                         } catch (error) {
@@ -136,7 +136,7 @@ export default command(meta, async ({ interaction }) => {
                                     { name: 'User', value: `<@${interaction.user.id}>` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                             return logChannel.send({ embeds: [logUnlock] })
                         } catch (error) {
@@ -160,7 +160,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Slow mode', value: `${cooldown} seconds` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 return logChannel.send({ embeds: [logSlowmode] })
                             } if (cooldown > 0) {
@@ -178,7 +178,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Slow mode', value: `${cooldown} seconds` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                                 return logChannel.send({ embeds: [logSlowmode] })
                             }

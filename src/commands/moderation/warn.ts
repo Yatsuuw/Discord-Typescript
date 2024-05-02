@@ -68,7 +68,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                         
                                 const warnDm = new EmbedBuilder()
                                     .setTitle("Warning")
@@ -80,7 +80,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                         
                                 interaction.reply({ embeds: [warn] });
                                 target.send({ embeds: [warnDm] })
@@ -102,7 +102,7 @@ export default command(meta, async ({ interaction }) => {
                             { name: 'Reason', value: `${reason}` },
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                     if (target.user.id != interaction.user.id) {
                         logWarn.addFields([{ name: 'Reason', value: `${reason}` }])

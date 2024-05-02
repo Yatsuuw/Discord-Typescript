@@ -32,10 +32,10 @@ export default command(meta, async ({ interaction }) => {
     if (existingServer) {
         const existingServerEmbed = new EmbedBuilder()
             .setTitle("Server initialisation")
-            .setDescription("The server is already initialised in the database.")
+            .setDescription("The server is already initialised in the database.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
             .setColor("Yellow")
             .setTimestamp()
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         return interaction.reply({
             ephemeral: true,
@@ -57,13 +57,13 @@ export default command(meta, async ({ interaction }) => {
 
         const successEmbed = new EmbedBuilder()
             .setTitle("Server initialisation")
-            .setDescription("The server has been successfully initialised in the database.")
+            .setDescription("The server has been successfully initialised in the database.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
             .setColor("Green")
             .setTimestamp()
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         return interaction.reply({
-            ephemeral: true,
+            ephemeral: false,
             embeds: [successEmbed]
         });
     });

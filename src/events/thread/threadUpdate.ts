@@ -56,7 +56,7 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                         // Rejoindre automatiquement le thread lors de sa désarchivation, puis le log
                         if (newThread.isTextBased()) {
@@ -99,7 +99,7 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {
@@ -131,7 +131,7 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {
@@ -167,7 +167,7 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                                 }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                         logChannel.send({ embeds: [threadUpdateLog] });
                     } else {

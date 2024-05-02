@@ -85,7 +85,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'User concerned', value: `<@${target.user.id}>` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                     
                                 const unwarnDm = new EmbedBuilder()
                                     .setTitle('Warning concerned')
@@ -97,7 +97,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Moderator', value: `<@${interaction.user.id}>` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                     
                                 interaction.reply({ embeds: [unwarn] });
                                 target.send({ embeds: [unwarnDm] })
@@ -116,7 +116,7 @@ export default command(meta, async ({ interaction }) => {
                                 { name: 'Warning concerned', value: `**ID :** #${warnId}\n**Author of the warning :** ${moderateurName} (${moderateur})\n**Date of warning :** ${date}\n**Reason :** ${raison}` },
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                         return await logChannel.send({ embeds: [logUnwarn] })
                     } else {

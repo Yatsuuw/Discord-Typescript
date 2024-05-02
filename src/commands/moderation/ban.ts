@@ -51,7 +51,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: `Reason`, value: `${reason}` }
             ])
             .setThumbnail(target.displayAvatarURL())
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
         const banDm = new EmbedBuilder()
@@ -63,7 +63,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: 'Staff', value: `${interaction.user.username}` }
             ])
             .setImage(target.user.displayAvatarURL())
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
             .setTimestamp()
 
         if (logChannelId) {
@@ -91,7 +91,7 @@ export default command(meta, async ({ interaction }) => {
                             { name: 'Reason', value: `${reason}` }
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                     return logChannel.send({ embeds: [logBan] })
                 } else {

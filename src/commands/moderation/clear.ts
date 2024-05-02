@@ -80,7 +80,7 @@ export default command(meta, async ({ interaction }) => {
                                     { name: 'Number', value: `${deletedMessages}` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                     
                             await interaction.reply({ embeds: [clearMessage], ephemeral: true });
                         }
@@ -94,7 +94,7 @@ export default command(meta, async ({ interaction }) => {
                                     { name: 'Number', value: `${deletedMessages}` }
                                 ])
                                 .setTimestamp()
-                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                                .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
                     
                             await interaction.reply({ embeds: [clearMessage], ephemeral: true });
                         }
@@ -112,7 +112,7 @@ export default command(meta, async ({ interaction }) => {
                                 { name: 'Number of messages', value: `${amount} messages to be deleted, ${deleted} have been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }
@@ -126,7 +126,7 @@ export default command(meta, async ({ interaction }) => {
                                 { name: 'Number of messages', value: `${amount} messages to be deleted, ${deleted} have been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }
@@ -140,7 +140,7 @@ export default command(meta, async ({ interaction }) => {
                                 { name: 'Number of messages', value: `${amount} message to be deleted, ${deleted} has been deleted` }
                             ])
                             .setTimestamp()
-                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                         return logChannel.send({ embeds: [logClear] })
                     }

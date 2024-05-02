@@ -30,7 +30,7 @@ export default event('threadCreate', async (client, thread: ThreadChannel<boolea
                         .setColor('DarkOrange')
                         .setDescription(`The member <@${ownerId}> (${ownerId}) created the thread \`${thread.name}\`.\nI joined it automatically.`)
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
                     //console.log(ownerId) // Pour vérifier si le code est exécuté deux fois
 

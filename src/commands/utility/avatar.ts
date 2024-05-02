@@ -20,7 +20,7 @@ export default command(meta, async ({ interaction }) => {
         .setAuthor({ name: `${target.user.tag}` })
         .setColor("White")
         .setImage(target.user.displayAvatarURL({ size: 4096 }))
-        .setFooter({ text: `By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+        .setFooter({ text: `By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
     return interaction.reply({
         ephemeral: true,

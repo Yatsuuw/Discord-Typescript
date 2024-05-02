@@ -50,7 +50,7 @@ export default command(meta, async ({ interaction }) => {
                         { name: 'Required experience for the next level', value: `${requiredXp - experience}` }
                     ])
                     .setTimestamp()
-                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
                 interaction.reply({ embeds: [levelEmbed] })
             }

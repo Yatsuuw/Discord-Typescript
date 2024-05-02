@@ -60,7 +60,7 @@ export default command(meta, async ({ interaction }) => {
                 .setTitle('An event has been issued')
                 .setColor('Greyple')
                 .setTimestamp()
-                .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' });
+                .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
             if (choices === 'threadCreate') {
                 embed.addFields([
@@ -86,7 +86,7 @@ export default command(meta, async ({ interaction }) => {
                 { name: 'Permission', value: 'OwnerID\nOnly the bot developer can execute this command at the moment.' }
             ])
             .setTimestamp()
-            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/profile.jpg' })
+            .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
         await interaction.reply({ embeds: [no_permission], ephemeral: true })
     }
