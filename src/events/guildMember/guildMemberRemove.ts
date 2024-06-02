@@ -37,13 +37,13 @@ export default event('guildMemberRemove', (client, member) => {
 
                     leaveChannel.send({ embeds: [memberLeave] })
                 } else {
-                    console.error(`The departure channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
+                    console.error(`The starting channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
                 console.error(`Error retrieving the welcome channel for the ${guildName} server (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`The departure channel ID is empty in the database for the ${guildName} server (${guildId}).`);
+            console.error(`The starting channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
 
         //if (leaveGifUrl) {

@@ -13,10 +13,12 @@ const meta = new SlashCommandBuilder()
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(true)
 
-export default command(meta, async ({ interaction }) => {
+export default command(meta, async ({ interaction, client }) => {
+    const guildId = interaction.guild?.id;
+    const guildName = interaction.guild?.name;
+    const guildsCount = client.guilds.cache.size || 0;
+
     if (interaction.guild) {
-        const guildId = interaction.guild?.id;
-        const guildName = interaction.guild?.name;
 
         db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
             if (err) {
@@ -52,7 +54,8 @@ export default command(meta, async ({ interaction }) => {
                                     .setDescription('The bot will restart.')
                                     .setColor('Blue')
                                     .addFields([
-                                        { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
+                                        { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` },
+                                        { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                                     ])
                                     .setTimestamp()
                                     .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
@@ -62,7 +65,8 @@ export default command(meta, async ({ interaction }) => {
                                     .setDescription('The bot has been restart.')
                                     .setColor('Blue')
                                     .addFields([
-                                        { name: 'Status', value: `Restart has been validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
+                                        { name: 'Status', value: `Restart has been validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` },
+                                        { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                                     ])
                                     .setTimestamp()
                                     .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
@@ -105,7 +109,8 @@ export default command(meta, async ({ interaction }) => {
                     .setDescription('The bot will restart.')
                     .setColor('Blue')
                     .addFields([
-                        { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` }
+                        { name: 'Status', value: `Restart validated ✅.\nPlease wait between 5 and 10 seconds before using the bot again to avoid any problems.` },
+                        { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                     ])
                     .setTimestamp()
                     .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })

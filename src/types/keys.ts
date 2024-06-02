@@ -3,4 +3,5 @@ export interface Keys {
     testGuild: string
     ownerId: string
     botId: string
+    version: string
 }

@@ -5,6 +5,7 @@ const keys: Keys = {
     testGuild: process.env.TEST_GUILD ?? 'nil',
     ownerId: process.env.OWNER_ID ?? 'nil',
     botId: process.env.BOT_ID ?? 'nil',
+    version: process.env.VERSION ?? 'nil',
 }
 
 if (Object.values(keys).includes('nil'))
