@@ -12,6 +12,8 @@ export default command(meta, async ({ interaction }) => {
         .setTitle('Ticket System')
         .setDescription('Click on one of the buttons below to open a ticket.')
         .setColor('Blue')
+        .setTimestamp()
+        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
     const buttons = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
