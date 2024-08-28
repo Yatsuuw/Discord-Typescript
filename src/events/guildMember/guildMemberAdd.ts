@@ -23,8 +23,6 @@ export default event('guildMemberAdd', async (client, member) => {
         const welcomeChannelId = row?.welcomeChannelID;
         const welcomeGifUrl = row?.welcomeGifUrl;
 
-        //console.log('ID du salon de bienvenue récupéré depuis la base de données :', welcomeChannelId);
-
         if (welcomeChannelId) {
             try {
                 const welcomeChannel = member.guild.channels.cache.get(welcomeChannelId) as TextChannel;
@@ -48,9 +46,5 @@ export default event('guildMemberAdd', async (client, member) => {
         } else {
             console.error(`The welcome channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
-
-        //if (welcomeGifUrl) {
-            //console.log('Lien du GIF pour le message de d\'arrivée : ', welcomeGifUrl);
-        //}
     });
 });

@@ -36,7 +36,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

@@ -11,11 +11,9 @@ export default event('interactionCreate', async (
     if (!interaction.isButton() && !interaction.isStringSelectMenu()) return
     const [namespace] = readId(interaction.customId)
 
-    // If namespace not in help pages stop
     if (!Object.values(Namespaces).includes(namespace)) return
 
     try {
-        // Defer update 
         await interaction.deferUpdate()
 
         switch(namespace) {

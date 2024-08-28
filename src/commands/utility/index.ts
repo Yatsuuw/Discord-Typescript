@@ -8,6 +8,7 @@ import result from './result'
 import avatar from './avatar'
 import version from './version'
 import level from './level'
+import leaderboard from './leaderboard'
 
 export default category('Utility', [
     message,
@@ -19,4 +20,5 @@ export default category('Utility', [
     avatar,
     version,
     level,
+    leaderboard,
 ])

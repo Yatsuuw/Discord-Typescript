@@ -51,8 +51,6 @@ export default command(meta, async ({ interaction }) => {
                         });
 
                         await thread.delete();
-
-                        //interaction.client.emit('threadCreate' as never, thread);
                     }
                     break;
             } 

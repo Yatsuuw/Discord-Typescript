@@ -45,7 +45,6 @@ export default command(meta, ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     const logMessage = new EmbedBuilder()

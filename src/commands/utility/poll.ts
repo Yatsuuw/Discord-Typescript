@@ -39,7 +39,6 @@ export default command(meta, async ({ interaction }) => {
         }
 
         const question = interaction.options.getString('question');
-        //const reponses = interaction.options.getString('reponses');
         const emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
         const regex = /"([^"]*)"/g;
         const matches = interaction.options.getString("reponses")?.match(regex);
@@ -58,7 +57,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

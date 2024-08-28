@@ -39,8 +39,6 @@ export default command(meta, async ({ interaction }) => {
         const logChannelId = row?.logChannelId;
 
         if (!target.bannable) return await interaction.reply({ content: 'This member cannot be banned.', ephemeral: true });
-        //if (!target.kickable) console.log(`${target.user.username} ne peut pas être banni`);
-        //if (target.kickable) console.log(`${target.user.username} a été banni`)
 
         const banServer = new EmbedBuilder()
             .setTitle("Ban")
@@ -69,10 +67,8 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
-                    // Try pour bannir et envoyer le message dans le salon d'exécution et en message privé.
                     try {
                         await target.send({ embeds: [banDm] });
                         await target.ban({ reason });

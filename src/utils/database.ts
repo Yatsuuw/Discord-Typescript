@@ -11,7 +11,6 @@ db.run(`
         levelChannelID TEXT,
         welcomeGifUrl TEXT,
         leaveGifUrl TEXT,
-        levelChannelID TEXT,
         levelSystem TEXT
     );
 `)
@@ -38,6 +37,15 @@ db.run(`
         userId TEXT,
         level INTEGER DEFAULT 1,
         experience INTEGER DEFAULT 0,
+        FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
+    );
+`)
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS servers_tickets (
+        guildId INTEGER PRIMARY KEY,
+        ticketsModId TEXT,
+        ticketsName TEXT,
         FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
     );
 `)

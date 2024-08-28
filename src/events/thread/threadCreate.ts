@@ -32,11 +32,7 @@ export default event('threadCreate', async (client, thread: ThreadChannel<boolea
                         .setTimestamp()
                         .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
-                    //console.log(ownerId) // Pour vérifier si le code est exécuté deux fois
-
-                    // Si l'autheur du thread N'EST PAS le bot
                     if (ownerId !== keys.botId) {
-                        // Rejoindre automatiquement le thread lors de sa création, puis le log
                         if (thread.isTextBased()) {
                             thread.join().then(async () => {
                                 await logChannel.send({ embeds: [threadCreateLog] });

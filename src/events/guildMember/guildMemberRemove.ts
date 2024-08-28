@@ -13,14 +13,12 @@ export default event('guildMemberRemove', (client, member) => {
 
     db.get('SELECT leaveChannelID, leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
         if (err) {
-            console.error(`Erreur lors de la récupération des paramètres leaveChannelId et leaveGifUrl pour le serveur ${guildName} (${guildId}) : `, err);
+            console.error(`Error retrieving leaveChannelId and leaveGifUrl parameters for server ${guildName} (${guildId}) : `, err);
             return;
         }
 
         const leaveChannelId = row?.leaveChannelID;
         const leaveGifUrl = row?.leaveGifUrl;
-
-        //console.log("ID du salon de départ récupéré depuis la base de données : ", leaveChannelId);
 
         if (leaveChannelId) {
             try {
@@ -37,17 +35,13 @@ export default event('guildMemberRemove', (client, member) => {
 
                     leaveChannel.send({ embeds: [memberLeave] })
                 } else {
-                    console.error(`The starting channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
+                    console.error(`The departure channel with ID ${leaveChannelId} was not found for server ${guildName} (${guildId}).`);
                 }
             } catch (error) {
                 console.error(`Error retrieving the welcome channel for the ${guildName} server (${guildId}). Error : `, error);
             }
         } else {
-            console.error(`The starting channel ID is empty in the database for the ${guildName} server (${guildId}).`);
+            console.error(`The departure channel ID is empty in the database for the ${guildName} server (${guildId}).`);
         }
-
-        //if (leaveGifUrl) {
-            //console.log('Lien du GIF pour le message de départ : ', leaveGifUrl);
-        //}
     });
 });

@@ -39,8 +39,6 @@ export default command(meta, async ({ interaction }) => {
         const logChannelId = row?.logChannelId;
 
         if (!target.kickable) return await interaction.reply({ content: 'This member cannot be kicked.', ephemeral: true });
-        //if (!target.kickable) console.log(`${target.user.username} ne peut pas être expulsé`);
-        //if (target.kickable) console.log(`${target.user.username} a été expulsé`)
 
         const kickServer = new EmbedBuilder()
             .setTitle("Expulsion")
@@ -69,7 +67,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

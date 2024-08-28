@@ -41,10 +41,8 @@ export default command(meta, async ({ interaction }) => {
             return;
         }
 
-        //const channel = (interaction.options.getChannel('message') || interaction.channel) as TextChannel;
         const channel_modify = interaction.options.getChannel("channel") as TextChannel;
         const key = interaction.options.getString('status');
-        //const value = interaction.options.getString('value');
         const cooldown = interaction.options.getNumber('cooldown') || 0;
         const logChannelId = row?.logChannelId;
 
@@ -96,7 +94,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     if (key == 'Lock') {

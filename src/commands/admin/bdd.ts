@@ -12,6 +12,11 @@ interface ServerSettings {
     levelSystem?: string,
 }
 
+interface Tickets_Settings {
+    ticketsModId?: string,
+    ticketsName?: string,
+}
+
 const meta = new SlashCommandBuilder ()
     .setName('bdd')
     .setDescription('Modify database values.')
@@ -29,6 +34,8 @@ const meta = new SlashCommandBuilder ()
                 { name: 'Welcome Gif URL', value: 'welcomegifurl' },
                 { name: 'Leave Gif URL', value: 'leavegifurl' },
                 { name: 'Level Channel ID', value: 'levelchannelid' },
+                { name: 'Moderator Role Tickets', value: 'ticketsmodid' },
+                { name: 'Tickets Category Name', value: 'ticketsname' }
             )
     )
     .addStringOption(option =>
@@ -54,6 +61,8 @@ export default command(meta, async ({ interaction, log }) => {
     const leaveGifUrl = interaction.options.getString("element");
     const levelChannelId = interaction.options.getString("element");
     const levelSystemBool = interaction.options.getBoolean("levels-system");
+    const ticketsModId = interaction.options.getString("element");
+    const ticketsName = interaction.options.getString("element");
     const guildName = interaction.guild?.name;
 
     if (key == "logchannelid")
@@ -268,6 +277,87 @@ export default command(meta, async ({ interaction, log }) => {
                     ephemeral: true,
                     content: `Leveling system : ${levelSystem}`
                 });
+            }
+        })
+    if (key == "leavegifurl")
+        db.get('SELECT leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+            if (err) {
+                console.error('Error retrieving the "leaveGifUrl" parameter from the database.', err);
+            }
+            if (leaveGifUrl !== null) {
+                try {
+                    db.run(`UPDATE servers_settings SET leaveGifUrl = ? WHERE guildId = ?`, [leaveGifUrl, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The link in the gif of the original message has been changed. New link: ${leaveChannelId}`
+                    })
+                } catch (error) {
+                    console.error(`An error occurred when modifying the link of the starting gif on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occurred when modifying the link of the starting gif.`
+                    });
+                };
+            } else {
+                const leaveGif = row?.leaveGifUrl;
+                interaction.reply({
+                    ephemeral: true,
+                    content: `The starting gif link is: ${leaveGif}`
+                });
+            }
+        })
+    if (key == "ticketsmodid")
+        db.get('SELECT ticketsModId FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: Tickets_Settings) => {
+            if (err) {
+                console.error('Error retrieving the "ticketsModId" parameter from the database.', err);
+            }
+            if (ticketsModId !== null) {
+                try {
+                    db.run(`UPDATE servers_tickets SET ticketsModId = ? WHERE guildId = ?`, [ticketsModId, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The ID of the mod role for tickets channels has been changed.\nNew ID : ${ticketsModId}`
+                    })
+                } catch (error) {
+                    console.error(`An error occurred when modifying the ID of the mode role id for tickets channels on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occurred when changing the mod role id for tickets channels.`
+                    });
+                };
+            } else {
+                const ticketsRole = row?.ticketsModId;
+                interaction.reply({
+                    ephemeral: true,
+                    content: `The mod role id for tickets channels: ${ticketsRole}`
+                })
+            }
+        })
+    if (key == "ticketsname")
+        db.get('SELECT ticketsName FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: Tickets_Settings) => {
+            if (err) {
+                console.error('Error retrieving the "ticketsName" parameter from the database.', err);
+            }
+            if (ticketsName !== null) {
+                try {
+                    db.run(`UPDATE servers_tickets SET ticketsName = ? WHERE guildId = ?`, [ticketsName, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The name of the tickets category has been changed.\nNew name : ${welcomeChannelId}`
+                    })
+                } catch (error) {
+                    console.error(`An error occurred when modifying the name of the tickets category on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occurred when changing the name of tickets category.`
+                    });
+                };
+            } else {
+                const tickets_name = row?.ticketsName;
+                interaction.reply({
+                    ephemeral: true,
+                    content: `The name of tickets category: \`${tickets_name}\``
+                })
             }
         })
 });

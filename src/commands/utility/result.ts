@@ -85,7 +85,6 @@ export default command(meta, async ({ interaction }) => {
         const commentaire = interaction.options.getString('comment') || 'No comment';
         const key = interaction.options.getString('embed-color')
         const logChannelId = row?.logChannelId;
-        //console.log(logChannelId);
 
         const mdt = new EmbedBuilder()
             .setTitle("Résultat de la rencontre")
@@ -104,7 +103,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

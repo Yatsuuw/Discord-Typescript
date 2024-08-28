@@ -41,18 +41,16 @@ export function addExperience(guildId: string, userId: string) {
                                     console.error('Error adding user:', err);
                                     return;
                                 }
-                                //console.log('User successfully added');
                             });
                         } else {
-                            const level = row.level || 1;
-                            const experience = row.experience || 0;
+                            const level = Math.floor(row.level || 1);
+                            const experience = Math.floor(row.experience || 0);
                             const { level: newLevel, xp: remainingXp } = Xp(level, experience + xpToAdd);
                             db.run('UPDATE levels SET level = ?, experience = ? WHERE guildId = ? AND userId = ?', [newLevel, remainingXp, String(guildId), userId], (err) => {
                                 if (err) {
                                     console.error('Error updating user experience:', err);
                                     return;
                                 }
-                                //console.log('Experience successfully updated');
                 
                                 if (newLevel > level) {
                                     logChannel.send({ content: `Congratulations to <@${userId}> for reaching the level ${newLevel}! 🎉` });
@@ -78,10 +76,9 @@ export function getUserLevel(guildId: string, userId: string) {
         }
 
         if (!row) {
-            //console.log('The user does not yet have a registered level.');
         } else {
-            const level = row?.level || 1;
-            const experience = row?.experience || 0;
+            const level = Math.floor(row?.level || 1);
+            const experience = Math.floor(row?.experience || 0);
             const { xp: remainingXp } = Xp(level, experience);
             console.log(`User level: ${level}\nRemaining experience until next level: ${remainingXp}`);
         }

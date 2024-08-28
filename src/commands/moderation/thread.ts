@@ -71,7 +71,6 @@ export default command(meta, async ({ interaction }) => {
 
                                 if (thread.joinable) await thread.join();
                                 await interaction.reply({ embeds: [joinThread] });
-                                // Log l'événement Thread Join
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
                                 return await interaction.reply({ content: `I was unable to join the thread. Error :\n${error}`, ephemeral: true });
@@ -100,7 +99,6 @@ export default command(meta, async ({ interaction }) => {
 
                                 await interaction.reply({ embeds: [leaveThread] });
                                 await thread.leave();
-                                // Log l'événement Thread Leave
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
                                 interaction.reply({ content: `JI was unable to leave the thread. Error :\n${error}`, ephemeral: true });
@@ -129,7 +127,6 @@ export default command(meta, async ({ interaction }) => {
 
                                 await interaction.reply({ embeds: [archiveThread] });
                                 await thread.setArchived(true);
-                                // Log l'événement Thread Archive
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
                                 interaction.reply({ content: `I was unable to archive the thread. Error :\n${error}`, ephemeral: true });
@@ -158,7 +155,6 @@ export default command(meta, async ({ interaction }) => {
 
                                 await thread.setArchived(false);
                                 await interaction.reply({ embeds: [unarchiveThread] });
-                                // Log l'événement Thread Unarchive
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
                                 interaction.reply({ content: `I couldn't unarchive the thread. Error :\n${error}`, ephemeral: true });
@@ -187,7 +183,6 @@ export default command(meta, async ({ interaction }) => {
 
                                 await interaction.reply({ embeds: [deleteThread] });
                                 await thread.delete();
-                                // Log l'événement Thread Delete
                                 logChannel.send({ embeds: [threadLog] })
                             } catch (error) {
                                 interaction.reply({ content: `I was unable to delete the thread. Error :\n${error}`, ephemeral: true });

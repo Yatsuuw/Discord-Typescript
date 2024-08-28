@@ -7,7 +7,6 @@ interface ServerSettings {
 }
 
 export default event('messageCreate', async (client, message: Message) => {
-    // Vérifier si le message n'est pas envoyé par un bot et est envoyé dans un serveur
     if (!message.author.bot && message.guild) {
         const guildId = message.guild.id;
         const userId = message.author.id;
@@ -20,7 +19,6 @@ export default event('messageCreate', async (client, message: Message) => {
             const levelSystemBool = row?.levelSystem;
 
             if (levelSystemBool == "1")
-                // Ajouter de l'expérience à l'utilisateur dans la base de données
                 addExperience(guildId, userId);
             else
                 return;

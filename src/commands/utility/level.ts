@@ -38,7 +38,7 @@ export default command(meta, async ({ interaction }) => {
             } else {
                 const level = row?.level || 1;
                 const experience = row?.experience || 0;
-                const requiredXp = Math.pow(level + 1, 2) * 100;
+                const requiredXp = Math.floor(Math.pow(level + 1, 1.5) * 50); // Change the value to "1.5" or "50" to reduce or increase the experience required to pass levels.
 
                 const levelEmbed = new EmbedBuilder()
                     .setTitle(`${target.user.username}'s rank`)

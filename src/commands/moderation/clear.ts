@@ -42,9 +42,7 @@ export default command(meta, async ({ interaction }) => {
             return;
         }
 
-        //console.log("Commande clear exécutée");
         const amount = interaction.options.getInteger("number")!;
-        //console.log('Amount:', amount);
         const channel = (interaction.options.getChannel("channel") || interaction.channel) as TextChannel;
         const target = interaction.options.getMember("target") as GuildMember;
         const logChannelId = row?.logChannelId;
@@ -60,7 +58,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

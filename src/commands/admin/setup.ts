@@ -44,27 +44,44 @@ export default command(meta, async ({ interaction }) => {
     }
 
     db.run(`
-        INSERT OR IGNORE INTO servers_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl, levelChannelID)
-        VALUES (?, NULL, NULL, NULL, 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', NULL)
+        INSERT OR IGNORE INTO servers_settings (guildId, logChannelId, welcomeChannelId, leaveChannelId, welcomeGifUrl, leaveGifUrl, levelChannelID, levelSystem)
+        VALUES (?, NULL, NULL, NULL, 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', 'https://c.tenor.com/A8bNTOeNznQAAAAC/tenor.gif', NULL, 0)
     `, [guildId], (err) => {
         if (err) {
-            console.error(`Server initialization error in the database for server ${guildName} (${guildId}). Error`, err)
+            console.error(`Server initialization error in the database for server ${guildName} (${guildId}) in the table \`servers_settings\`. Error`, err)
             return interaction.reply({
                 ephemeral: true,
-                content: "An error has occurred during database initialisation."
+                content: "An error has occurred during database initialisation in the table \`servers_settings\`."
             });
         }
+    });
+    db.run(`
+        INSERT OR IGNORE INTO servers_tickets (guildId, ticketsModId, ticketsName) VALUES (?, NULL, Tickets)`, [guildId], (err) => {
+        if (err) {
+            console.error(`Server initialization error in the database for server ${guildName} (${guildId}) in the table \`servers_tickets\`. Error`, err)
+            return interaction.reply({
+                ephemeral: true,
+                content: "An error has occurred during database initialisation in the table \`servers_tickets\`."
+            });
+        }
+    });
 
-        const successEmbed = new EmbedBuilder()
+    const successEmbedSettings = new EmbedBuilder()
             .setTitle("Server initialisation")
-            .setDescription("The server has been successfully initialised in the database.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
+            .setDescription("The server has been successfully initialised in the database for the table corresponding to the general configuration.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
             .setColor("Green")
             .setTimestamp()
             .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
-        return interaction.reply({
-            ephemeral: false,
-            embeds: [successEmbed]
-        });
+    const successEmbedTickets = new EmbedBuilder()
+        .setTitle("Server initialisation")
+        .setDescription("The server has been successfully initialised in the database for the table corresponding to the tickets.")
+        .setColor("Green")
+        .setTimestamp()
+        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+
+    return interaction.reply({
+        ephemeral: false,
+        embeds: [successEmbedSettings, successEmbedTickets]
     });
 });

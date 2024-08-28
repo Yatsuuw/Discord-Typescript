@@ -46,7 +46,6 @@ export default command(meta, async ({ interaction }) => {
         const convertedTime = ms(duration);
         const reason = interaction.options.getString('reason') || 'No reason';
         const logChannelId = row?.logChannelId;
-        //console.log(logChannelId);
 
         if (!target.moderatable) return await interaction.reply({ content: 'This user cannot be muted!', ephemeral: true });
         if (!convertedTime) return await interaction.reply({ content: 'Specifies a valid duration!', ephemeral: true });
@@ -79,7 +78,6 @@ export default command(meta, async ({ interaction }) => {
         if (logChannelId) {
             try {
                 const logChannel = interaction.guild?.channels.cache.get(logChannelId) as TextChannel;
-                //console.log(logChannel)
 
                 if (logChannel) {
                     try {

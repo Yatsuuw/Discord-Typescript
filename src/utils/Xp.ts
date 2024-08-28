@@ -7,16 +7,7 @@
 
 export function Xp(level: number, xp: number) {
 
-    //xp+= Math.floor(random(Math.sqrt(level + 1) * 10, Math.sqrt(level + 1) * 25));
-    
-    //if (xp > 100 * (level + 1)) {
-        //level += 1;
-        //xp = xp - ((level) * 100);
-    //}
-
-    //return { level: Math.floor(level), xp: Math.floor(xp) };
-
-    const requiredXp = Math.pow(level + 1, 2) * 100;
+    const requiredXp = Math.floor(Math.pow(level + 1, 1.5) * 50); // Change the value to "1.5" or "50" to reduce or increase the experience required to pass levels.
     xp += 10;
 
     if (xp >= requiredXp) {
@@ -25,6 +16,7 @@ export function Xp(level: number, xp: number) {
     }
 
     return { level: Math.floor(level), xp: Math.floor(xp) };
+
 }
 
 /**

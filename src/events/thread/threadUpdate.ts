@@ -37,7 +37,6 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
             return;
         }
 
-        // Vérifier si le thread est désarchivé
         if (oldThread.archived && !newThread.archived) {
             const logChannelId = row?.logChannelId;
 
@@ -58,11 +57,9 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
                             .setTimestamp()
                             .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
 
-                        // Rejoindre automatiquement le thread lors de sa désarchivation, puis le log
                         if (newThread.isTextBased()) {
                             newThread.join().then(() => {
                                 logChannel.send({ embeds: [threadUpdateLog] });
-                                //console.log(`Le bot a rejoint le thread : ${newThread.name}.`);
                             }).catch((error) => {
                                 console.error(`Error when trying to join the thread: ${newThread.name} for the server ${guildName} (${guildId}). Error: ${error}`);
                             });
@@ -80,7 +77,6 @@ export default event('threadUpdate', async (client, oldThread: ThreadChannel<boo
             }
         }
 
-        // Vérifier si le nom du thread a été modifié
         if (oldThread.name !== newThread.name) {
             const logChannelId = row?.logChannelId;
 

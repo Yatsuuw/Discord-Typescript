@@ -3,14 +3,12 @@ import { APIEmbedField, ButtonStyle, EmbedBuilder, InteractionReplyOptions, Stri
 import CategoryRoot from '../commands'
 import { chunk, createId, readId } from "../utils"
 
-// Namespaces we will use
 export const Namespaces = {
     root: 'help_category_root',
     select: 'help_category_select',
     action: 'help_category_action'
 }
 
-// Actions we will use
 export const Actions = {
     next: '+',
     back: '-'
@@ -19,9 +17,7 @@ export const Actions = {
 const N = Namespaces
 const A = Actions
 
-// Generate root embed for help paginator
 export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
-    // Map the categories
     const mappedCategories = CategoryRoot.map(({ name, description, emoji }) => 
         new StringSelectMenuOptionBuilder({
             label: name,
@@ -31,7 +27,6 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
         })
     )
 
-    // Create embed
     const embed = new EmbedBuilder()
         .setTitle('Help menu')
         .setDescription('Search for information relating to your request.')
@@ -41,7 +36,6 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
         .setColor("Aqua")
         .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
-    // Create select menu for categories
     const selectId = createId(N.select)
     const select = new StringSelectMenuBuilder()
         .setCustomId(selectId)
@@ -59,13 +53,10 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
     }
 }
 
-// Generate new embed for current category page
 export function getCategoryPage(interactionId: string): InteractionReplyOptions {
-    // Extractly needed metadata from interactionId
     const [_namespace, categoryName, action, currentOffset] = readId(interactionId)
 
     const categoryChunks = CategoryRoot.map((c) => {
-        // Pre-map all commands as embed fields
         const commands: APIEmbedField[] = c.commands.map((c) => ({
             name: c.meta.name,
             value: c.meta.description,
@@ -81,11 +72,8 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
     if (!category)
         throw new Error('invalid interactionId ; The page for the corresponding category was not found !')
 
-        // Get current offset
         let offset = parseInt(currentOffset)
-        // if is NaN set offset to 0
         if (isNaN(offset)) offset = 0
-        // Increment offset according to action
         if (action === A.next) offset++
         else if (action === A.back) offset--
 
@@ -99,7 +87,6 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
             .setFields(category.commands[offset])
             .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
 
-        // Back button
         const backId = createId(N.action, category.name, A.back, offset)
         const backButton = new ButtonBuilder()
             .setCustomId(backId)
@@ -107,14 +94,12 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
             .setStyle(ButtonStyle.Danger)
             .setDisabled(offset <= 0)
 
-        // Return to root
         const rootId = createId(N.root)
         const rootButton = new ButtonBuilder()
             .setCustomId(rootId)
             .setLabel('Categories')
             .setStyle(ButtonStyle.Secondary)
 
-        // Next button
         const nextId = createId(N.action, category.name, A.next, offset)
         const nextButton = new ButtonBuilder()
             .setCustomId(nextId)
