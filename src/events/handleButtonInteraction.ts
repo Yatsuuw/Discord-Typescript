@@ -13,7 +13,10 @@ interface ServersSettings {
 export const handleButtonInteraction = async (interaction: ButtonInteraction, log: Function) => {
 
     if (!interaction.isButton()) return;
-    if (interaction.customId.startsWith('claim_ownership_voice')) return;
+
+    //if (interaction.customId.startsWith('claim_ownership_voice')) return;
+    const ticketRelatedIds = ['claim_ticket', 'close_ticket', 'help_ticket'];
+    if (!ticketRelatedIds.some(id => interaction.customId.startsWith(id))) return;
 
     const guild = interaction.guild;
     const guildName = guild?.name;
