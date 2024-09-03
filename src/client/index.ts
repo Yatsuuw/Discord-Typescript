@@ -10,7 +10,8 @@ export const client = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.DirectMessages,
-        GatewayIntentBits.DirectMessageTyping
+        GatewayIntentBits.DirectMessageTyping,
+        GatewayIntentBits.GuildVoiceStates,
     ],
 })
 

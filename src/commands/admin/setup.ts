@@ -35,7 +35,7 @@ export default command(meta, async ({ interaction }) => {
             .setDescription("The server is already initialised in the database.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
             .setColor("Yellow")
             .setTimestamp()
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
         return interaction.reply({
             ephemeral: true,
@@ -56,12 +56,22 @@ export default command(meta, async ({ interaction }) => {
         }
     });
     db.run(`
-        INSERT OR IGNORE INTO servers_tickets (guildId, ticketsModId, ticketsName) VALUES (?, NULL, Tickets)`, [guildId], (err) => {
+        INSERT OR IGNORE INTO servers_tickets (guildId, ticketsModId, ticketsName) VALUES (?, NULL, 'Tickets')`, [guildId], (err) => {
         if (err) {
             console.error(`Server initialization error in the database for server ${guildName} (${guildId}) in the table \`servers_tickets\`. Error`, err)
             return interaction.reply({
                 ephemeral: true,
                 content: "An error has occurred during database initialisation in the table \`servers_tickets\`."
+            });
+        }
+    });
+    db.run(`
+        INSERT OR IGNORE INTO servers_voices (guildId, voiceCategoryName, voiceChannelName) VALUES (?, 'Voices Channels', 'Create a voice channel')`, [guildId], (err) => {
+        if (err) {
+            console.error(`Server initialization error in the database for server ${guildName} (${guildId}) in the table \`servers_voices\`. Error`, err)
+            return interaction.reply({
+                ephemeral: true,
+                content: "An error has occurred during database initialisation in the table \`servers_voices\`."
             });
         }
     });
@@ -71,17 +81,24 @@ export default command(meta, async ({ interaction }) => {
             .setDescription("The server has been successfully initialised in the database for the table corresponding to the general configuration.\n**→ /bdd** for configure your server database.\n**→ /help** for more informations.\n**→ /version** for the current version of the bot.")
             .setColor("Green")
             .setTimestamp()
-            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+            .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
     const successEmbedTickets = new EmbedBuilder()
         .setTitle("Server initialisation")
         .setDescription("The server has been successfully initialised in the database for the table corresponding to the tickets.")
         .setColor("Green")
         .setTimestamp()
-        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
+
+    const successEmbedVoices = new EmbedBuilder()
+        .setTitle("Server initialisation")
+        .setDescription("The server has been successfully initialised in the database for the table corresponding to the voices channels.")
+        .setColor("Green")
+        .setTimestamp()
+        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
     return interaction.reply({
         ephemeral: false,
-        embeds: [successEmbedSettings, successEmbedTickets]
+        embeds: [successEmbedSettings, successEmbedTickets, successEmbedVoices]
     });
 });

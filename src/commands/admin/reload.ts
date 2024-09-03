@@ -3,7 +3,7 @@ import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, TextChannel } f
 import keys from '../../keys';
 import { db } from '../../utils/database';
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string;
 }
 
@@ -20,7 +20,7 @@ export default command(meta, async ({ interaction, client }) => {
 
     if (interaction.guild) {
 
-        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error(`Error retrieving the "logChannelId" parameter for the ${guildName} server (${guildId}). Error :`, err);
                 return;
@@ -44,7 +44,7 @@ export default command(meta, async ({ interaction, client }) => {
                                         { name: 'Permission', value: 'Your account ID does not match that of the bot owner.' }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
                         
                                 interaction.reply({ embeds: [dontOwner], ephemeral: true })
                             } else {
@@ -58,7 +58,7 @@ export default command(meta, async ({ interaction, client }) => {
                                         { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
                                 const reloadLog = new EmbedBuilder()
                                     .setTitle('Restart')
@@ -69,7 +69,7 @@ export default command(meta, async ({ interaction, client }) => {
                                         { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
                         
                                 await interaction.reply({ embeds: [reloadSuccess], ephemeral: true })
                                 await logChannel.send({ embeds: [reloadLog] })
@@ -100,7 +100,7 @@ export default command(meta, async ({ interaction, client }) => {
                         { name: 'Permission', value: 'Your account ID does not match that of the bot owner.' }
                     ])
                     .setTimestamp()
-                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
                     await interaction.reply({ embeds: [dontOwner], ephemeral: true });
             } else {
@@ -113,7 +113,7 @@ export default command(meta, async ({ interaction, client }) => {
                         { name: 'Guilds count', value: `I'm on \`${guildsCount}\` servers.` }
                     ])
                     .setTimestamp()
-                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
                 await interaction.reply({ embeds: [reloadSuccess], ephemeral: false })
 

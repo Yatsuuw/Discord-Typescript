@@ -34,7 +34,7 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
             { name: 'About', value: '→ /version for the current version and the about bot.' }
         ])
         .setColor("Aqua")
-        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+        .setFooter({ text: 'By yatsuuw @ Discord', iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
     const selectId = createId(N.select)
     const select = new StringSelectMenuBuilder()
@@ -85,7 +85,7 @@ export function getCategoryPage(interactionId: string): InteractionReplyOptions 
             .setDescription(category.description ?? defaultDescription)
             .setColor("Aqua")
             .setFields(category.commands[offset])
-            .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+            .setFooter({ text: `${offset + 1} / ${category.commands.length} - By yatsuuw @ Discord`, iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
         const backId = createId(N.action, category.name, A.back, offset)
         const backButton = new ButtonBuilder()

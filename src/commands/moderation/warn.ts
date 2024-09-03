@@ -3,7 +3,7 @@ import { command } from '../../utils'
 import { db } from '../../utils/database'
 import { format } from 'date-fns';
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string,
 }
 
@@ -35,7 +35,7 @@ export default command(meta, async ({ interaction }) => {
 
     const currentDate = format(new Date(), 'yyyy-MM-dd | HH:mm:ss');
 
-    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
         if (err) {
             console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             return;
@@ -67,7 +67,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
                         
                                 const warnDm = new EmbedBuilder()
                                     .setTitle("Warning")
@@ -79,7 +79,7 @@ export default command(meta, async ({ interaction }) => {
                                         { name: 'Reason', value: `${reason}` }
                                     ])
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
                         
                                 interaction.reply({ embeds: [warn] });
                                 target.send({ embeds: [warnDm] })
@@ -101,7 +101,7 @@ export default command(meta, async ({ interaction }) => {
                             { name: 'Reason', value: `${reason}` },
                         ])
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' })
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' })
 
                     if (target.user.id != interaction.user.id) {
                         logWarn.addFields([{ name: 'Reason', value: `${reason}` }])

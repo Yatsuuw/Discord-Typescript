@@ -2,7 +2,7 @@ import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js'
 import { command } from '../../utils'
 import { db } from '../../utils/database'
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string,
     welcomeChannelID?: string,
     leaveChannelID?: string,
@@ -12,9 +12,14 @@ interface ServerSettings {
     levelSystem?: string,
 }
 
-interface Tickets_Settings {
+interface ServersTickets {
     ticketsModId?: string,
     ticketsName?: string,
+}
+
+interface ServersVoices {
+    voiceChannelName?: string,
+    voiceCategoryName?: string,
 }
 
 const meta = new SlashCommandBuilder ()
@@ -35,7 +40,9 @@ const meta = new SlashCommandBuilder ()
                 { name: 'Leave Gif URL', value: 'leavegifurl' },
                 { name: 'Level Channel ID', value: 'levelchannelid' },
                 { name: 'Moderator Role Tickets', value: 'ticketsmodid' },
-                { name: 'Tickets Category Name', value: 'ticketsname' }
+                { name: 'Tickets Category Name', value: 'ticketsname' },
+                { name: 'Voice Channel Name', value: 'voicechannelname' },
+                { name: 'Voice Category Name', value: 'voicecategoryname' },
             )
     )
     .addStringOption(option =>
@@ -63,10 +70,12 @@ export default command(meta, async ({ interaction, log }) => {
     const levelSystemBool = interaction.options.getBoolean("levels-system");
     const ticketsModId = interaction.options.getString("element");
     const ticketsName = interaction.options.getString("element");
+    const voiceCategoryName = interaction.options.getString("element");
+    const voiceChannelName = interaction.options.getString("element");
     const guildName = interaction.guild?.name;
 
     if (key == "logchannelid")
-        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error(`Error when retrieving the "logChannelId" parameter from the database for the ${guildName} server (${guildId}).\nError :\n`, err);
             }
@@ -93,7 +102,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "welcomechannelid")
-        db.get('SELECT welcomeChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT welcomeChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "welcomeChannelId" parameter from the database.', err);
             }
@@ -120,7 +129,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "leavechannelid")
-        db.get('SELECT leaveChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT leaveChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "leaveChannelId" parameter from the database.', err);
             }
@@ -147,7 +156,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "welcomegifurl")
-        db.get('SELECT welcomeGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT welcomeGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "welcomeGifUrl" parameter from the database.', err);
             }
@@ -174,7 +183,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "leavegifurl")
-        db.get('SELECT leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "leaveGifUrl" parameter from the database.', err);
             }
@@ -201,7 +210,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "levelchannelid")
-        db.get('SELECT levelChannelID, levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT levelChannelID, levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "levelChannelID" parameter from the database.', err);
             }
@@ -239,7 +248,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (levelSystemBool !== null)
-        db.get('SELECT levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT levelSystem FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "levelSystem" parameter from the database.', err);
             }
@@ -280,7 +289,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "leavegifurl")
-        db.get('SELECT leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT leaveGifUrl FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "leaveGifUrl" parameter from the database.', err);
             }
@@ -307,7 +316,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "ticketsmodid")
-        db.get('SELECT ticketsModId FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: Tickets_Settings) => {
+        db.get('SELECT ticketsModId FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: ServersTickets) => {
             if (err) {
                 console.error('Error retrieving the "ticketsModId" parameter from the database.', err);
             }
@@ -334,7 +343,7 @@ export default command(meta, async ({ interaction, log }) => {
             }
         })
     if (key == "ticketsname")
-        db.get('SELECT ticketsName FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: Tickets_Settings) => {
+        db.get('SELECT ticketsName FROM servers_tickets WHERE guildId = ?', [guildId], async (err, row: ServersTickets) => {
             if (err) {
                 console.error('Error retrieving the "ticketsName" parameter from the database.', err);
             }
@@ -343,7 +352,7 @@ export default command(meta, async ({ interaction, log }) => {
                     db.run(`UPDATE servers_tickets SET ticketsName = ? WHERE guildId = ?`, [ticketsName, guildId]);
                     interaction.reply({
                         ephemeral: true,
-                        content: `The name of the tickets category has been changed.\nNew name : ${welcomeChannelId}`
+                        content: `The name of the tickets category has been changed.\nNew name : ${ticketsName}`
                     })
                 } catch (error) {
                     console.error(`An error occurred when modifying the name of the tickets category on the ${interaction.guild?.name} server. Error :\n`, error);
@@ -357,6 +366,60 @@ export default command(meta, async ({ interaction, log }) => {
                 interaction.reply({
                     ephemeral: true,
                     content: `The name of tickets category: \`${tickets_name}\``
+                })
+            }
+        })
+    if (key == "voicecategoryname")
+        db.get('SELECT voiceCategoryName FROM servers_voices WHERE guildId = ?', [guildId], async (err, row: ServersVoices) => {
+            if (err) {
+                console.error('Error retrieving the "voiceCategoryName" parameter from the database.', err);
+            }
+            if (voiceCategoryName !== null) {
+                try {
+                    db.run(`UPDATE servers_voices SET voiceCategoryName = ? WHERE guildId = ?`, [voiceCategoryName, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The name of the voice category has been changed.\nNew name : ${voiceCategoryName}`
+                    })
+                } catch (error) {
+                    console.error(`An error occurred when modifying the name of the voice category on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occurred when changing the name of voice category.`
+                    });
+                };
+            } else {
+                const voice_category = row?.voiceCategoryName;
+                interaction.reply({
+                    ephemeral: true,
+                    content: `The name of voice category: \`${voice_category}\``
+                })
+            }
+        })
+    if (key == "voicechannelname")
+        db.get('SELECT voiceChannelName FROM servers_voices WHERE guildId = ?', [guildId], async (err, row: ServersVoices) => {
+            if (err) {
+                console.error('Error retrieving the "voiceChannelName" parameter from the database.', err);
+            }
+            if (voiceChannelName !== null) {
+                try {
+                    db.run(`UPDATE servers_voices SET voiceChannelName = ? WHERE guildId = ?`, [voiceChannelName, guildId]);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `The name of the voice channel has been changed.\nNew name : ${voiceChannelName}`
+                    })
+                } catch (error) {
+                    console.error(`An error occurred when modifying the name of the voice channel on the ${interaction.guild?.name} server. Error :\n`, error);
+                    interaction.reply({
+                        ephemeral: true,
+                        content: `An error occurred when changing the name of voice channel.`
+                    });
+                };
+            } else {
+                const voice_channel = row?.voiceChannelName;
+                interaction.reply({
+                    ephemeral: true,
+                    content: `The name of voice channel: \`${voice_channel}\``
                 })
             }
         })

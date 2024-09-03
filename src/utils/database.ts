@@ -49,3 +49,12 @@ db.run(`
         FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
     );
 `)
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS servers_voices (
+        guildId INTEGER PRIMARY KEY,
+        voiceCategoryName TEXT,
+        voiceChannelName TEXT,
+        FOREIGN KEY (guildId) REFERENCES servers_settings(guildId)
+    )
+`)

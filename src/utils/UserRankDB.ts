@@ -10,14 +10,14 @@ interface Levels {
     experience?: number,
 }
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string,
 }
 
 export function addExperience(guildId: string, userId: string) {
     const xpToAdd = 0; // Fixed amount of experience : 0 <=> 10
 
-    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
         if (err) {
             console.error(`Error when retrieving the "logChannelId" parameter from the database for the server ${guildId}.\nError :\n`, err);
             return;

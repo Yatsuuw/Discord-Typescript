@@ -1,4 +1,4 @@
-import { EmbedBuilder, PermissionsBitField, TextChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMemberRoleManager, CategoryChannel, GuildChannel } from 'discord.js';
+import { EmbedBuilder, PermissionsBitField, TextChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMemberRoleManager, CategoryChannel, GuildChannel, ButtonInteraction } from 'discord.js';
 import { db } from '../utils';
 
 interface Tickets_Settings {
@@ -6,11 +6,15 @@ interface Tickets_Settings {
     ticketsName?: string;
 }
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string;
 }
 
-export const handleButtonInteraction = async (interaction: any, log: Function) => {
+export const handleButtonInteraction = async (interaction: ButtonInteraction, log: Function) => {
+
+    if (!interaction.isButton()) return;
+    if (interaction.customId.startsWith('claim_ownership_voice')) return;
+
     const guild = interaction.guild;
     const guildName = guild?.name;
     const guildId = guild?.id;
@@ -26,7 +30,7 @@ export const handleButtonInteraction = async (interaction: any, log: Function) =
             return;
         }
 
-        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guild.id], async (err, rows: ServerSettings) => {
+        db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guild.id], async (err, rows: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the "logChannelId" parameter:', err);
                 return;
@@ -74,7 +78,7 @@ export const handleButtonInteraction = async (interaction: any, log: Function) =
                                     .setDescription(`${channel.name} has been deleted by <@${interaction.user.id}>`)
                                     .setColor('Red')
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' });
 
                                 await interaction.reply({ content: 'This ticket will be closed in 5 seconds...', ephemeral: false });
                                 setTimeout(() => channel.delete(), 5000);
@@ -87,7 +91,7 @@ export const handleButtonInteraction = async (interaction: any, log: Function) =
                             const channelName = `${ticketType}-${interaction.user.username}-${Date.now()}`;
 
                             let category = guild.channels.cache.find(
-                                (c: GuildChannel) => c.name.toLowerCase() === ticketsName.toLowerCase() && c.type === 4
+                                c => c.name.toLowerCase() === ticketsName.toLowerCase() && c.type === 4
                             ) as CategoryChannel;
 
                             if (!category) {
@@ -102,7 +106,7 @@ export const handleButtonInteraction = async (interaction: any, log: Function) =
                                         .setDescription('The category for the ticket system has been created.')
                                         .setColor('DarkGreen')
                                         .setTimestamp()
-                                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
+                                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' });
 
                                     log(`[Tickets] Category "${ticketsName}" created with ID: ${category.id}`);
                                     await logChannel.send({ embeds: [categoryCreated] });
@@ -158,7 +162,7 @@ export const handleButtonInteraction = async (interaction: any, log: Function) =
                                     .setDescription(`A new ticket was created. Ticket type: ${ticketType === 'help' ? "Help Ticket" : 'Suggestion Ticket'}`)
                                     .setColor(ticketType === 'help' ? 'Green' : 'Purple')
                                     .setTimestamp()
-                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
+                                    .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' });
 
                                 await channel.send({ content: `<@${interaction.user.id}>`, embeds: [embed], components: [row] });
                                 await interaction.reply({ content: `Your ticket has been created: ${channel}`, ephemeral: true });

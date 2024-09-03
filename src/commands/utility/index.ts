@@ -9,6 +9,8 @@ import avatar from './avatar'
 import version from './version'
 import level from './level'
 import leaderboard from './leaderboard'
+import setAutomaticVocalChannel from './setAutomaticVocalChannel'
+import tickets from './tickets'
 
 export default category('Utility', [
     message,
@@ -21,4 +23,6 @@ export default category('Utility', [
     version,
     level,
     leaderboard,
+    setAutomaticVocalChannel,
+    tickets,
 ])

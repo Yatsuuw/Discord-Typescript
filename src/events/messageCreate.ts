@@ -2,7 +2,7 @@ import { event, db } from '../utils';
 import { Message } from 'discord.js';
 import { addExperience } from '../utils/UserRankDB';
 
-interface ServerSettings {
+interface ServersSettings {
     levelSystem?: string,
 }
 
@@ -11,7 +11,7 @@ export default event('messageCreate', async (client, message: Message) => {
         const guildId = message.guild.id;
         const userId = message.author.id;
 
-        db.get('SELECT * FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+        db.get('SELECT * FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
             if (err) {
                 console.error('Error retrieving the all parameters from the database.', err);
             }

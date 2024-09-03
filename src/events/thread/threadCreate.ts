@@ -3,7 +3,7 @@ import { event } from '../../utils';
 import { db } from '../../utils/database';
 import keys from '../../keys';
 
-interface ServerSettings {
+interface ServersSettings {
     logChannelId?: string;
 }
 
@@ -12,7 +12,7 @@ export default event('threadCreate', async (client, thread: ThreadChannel<boolea
     const guildName = thread.guild?.name;
     const ownerId = thread.ownerId;
 
-    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServerSettings) => {
+    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
         if (err) {
             console.error(`Error retrieving "logChannelId" parameter for server ${guildName} (${guildId}) :`, err);
             return;
@@ -30,7 +30,7 @@ export default event('threadCreate', async (client, thread: ThreadChannel<boolea
                         .setColor('DarkOrange')
                         .setDescription(`The member <@${ownerId}> (${ownerId}) created the thread \`${thread.name}\`.\nI joined it automatically.`)
                         .setTimestamp()
-                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://yatsuu.fr/wp-content/uploads/2024/04/cropped-logo-50x50.webp' });
+                        .setFooter({ text: "By yatsuuw @ Discord", iconURL: 'https://media.discordapp.net/attachments/1280662607212314715/1280662682533363743/favicon.png?ex=66d8e591&is=66d79411&hm=9c74475031c6396856ac6574232d3946ede7a1495d8269fc0cbd470408aebf66&=&format=webp&quality=lossless&width=350&height=350' });
 
                     if (ownerId !== keys.botId) {
                         if (thread.isTextBased()) {
