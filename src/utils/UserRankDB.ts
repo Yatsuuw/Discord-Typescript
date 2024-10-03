@@ -12,20 +12,23 @@ interface Levels {
 
 interface ServersSettings {
     logChannelId?: string,
+    levelChannelID?: string,
 }
 
 export function addExperience(guildId: string, userId: string) {
     const xpToAdd = 0; // Fixed amount of experience : 0 <=> 10
 
-    db.get('SELECT logChannelId FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
+    db.get('SELECT logChannelId, levelChannelID FROM servers_settings WHERE guildId = ?', [guildId], async (err, row: ServersSettings) => {
         if (err) {
             console.error(`Error when retrieving the "logChannelId" parameter from the database for the server ${guildId}.\nError :\n`, err);
             return;
         }
         const logChannelId = row?.logChannelId;
+        const levelChannelId = row?.levelChannelID;
 
         if (logChannelId) {
             const logChannel = client.channels.cache.get(`${logChannelId}`) as TextChannel;
+            const levelChannel = client.channels.cache.get(`${levelChannelId}`) as TextChannel;
 
             if (logChannel) {
                 try {
@@ -43,19 +46,27 @@ export function addExperience(guildId: string, userId: string) {
                                 }
                             });
                         } else {
-                            const level = Math.floor(row.level || 1);
-                            const experience = Math.floor(row.experience || 0);
-                            const { level: newLevel, xp: remainingXp } = Xp(level, experience + xpToAdd);
-                            db.run('UPDATE levels SET level = ?, experience = ? WHERE guildId = ? AND userId = ?', [newLevel, remainingXp, String(guildId), userId], (err) => {
-                                if (err) {
-                                    console.error('Error updating user experience:', err);
-                                    return;
+                            if (levelChannel) {
+                                try {
+                                    const level = Math.floor(row.level || 1);
+                                    const experience = Math.floor(row.experience || 0);
+                                    const { level: newLevel, xp: remainingXp } = Xp(level, experience + xpToAdd);
+                                    db.run('UPDATE levels SET level = ?, experience = ? WHERE guildId = ? AND userId = ?', [newLevel, remainingXp, String(guildId), userId], (err) => {
+                                        if (err) {
+                                            console.error('Error updating user experience:', err);
+                                            return;
+                                        }
+                        
+                                        if (newLevel > level) {
+                                            levelChannel.send({ content: `Congratulations to <@${userId}> for reaching the level ${newLevel}! 🎉` });
+                                        }
+                                    });
+                                } catch (error) {
+                                    console.error(`Error retrieving log channel for server ${guildId} : `, error);
                                 }
-                
-                                if (newLevel > level) {
-                                    logChannel.send({ content: `Congratulations to <@${userId}> for reaching the level ${newLevel}! 🎉` });
-                                }
-                            });
+                            } else {
+                                console.error(`The level channel ID is empty in the database for the server ${guildId}.`);
+                            }
                         }
                     });
                 } catch (error) {
